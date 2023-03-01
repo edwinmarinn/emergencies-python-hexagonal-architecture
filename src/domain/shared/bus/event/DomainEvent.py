@@ -1,6 +1,6 @@
 import datetime
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Any, Dict
 
 from domain.shared.utils.dates import date_to_string
 from domain.shared.value_objects import Uuid

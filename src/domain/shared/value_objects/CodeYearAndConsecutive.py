@@ -1,9 +1,8 @@
-import re
 import datetime
+import re
 from typing import Optional
 
 from domain.shared.value_objects import ValueObject
-
 
 tz_bogota = datetime.timezone(-datetime.timedelta(hours=5), "America/Bogota")
 

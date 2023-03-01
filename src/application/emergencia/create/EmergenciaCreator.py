@@ -1,11 +1,10 @@
-from domain.emergencia.entities.Emergencia import Emergencia
-from domain.emergencia.entities.EmergenciaRepository import EmergenciaRepository
+from domain.emergencia.entities import Emergencia, EmergenciaRepository
 from domain.emergencia.value_objects import (
-    EmergenciaId,
-    EmergenciaCode,
     EmergenciaAbscisa,
+    EmergenciaCode,
+    EmergenciaId,
 )
-from domain.shared.bus.event.EventBus import EventBus
+from domain.shared.bus.event import EventBus
 from domain.shared.value_objects import UsuarioId
 
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from domain.shared.bus.command.Command import Command
+from domain.shared.bus.command import Command
 
 
 @dataclass(frozen=True)

@@ -1,13 +1,10 @@
-from application.emergencia.create.CreateEmergenciaCommand import (
-    CreateEmergenciaCommand,
-)
-from application.emergencia.create.EmergenciaCreator import EmergenciaCreator
+from application.emergencia.create import CreateEmergenciaCommand, EmergenciaCreator
 from domain.emergencia.value_objects import (
-    EmergenciaId,
-    EmergenciaCode,
     EmergenciaAbscisa,
+    EmergenciaCode,
+    EmergenciaId,
 )
-from domain.shared.bus.command.CommandHandler import CommandHandler
+from domain.shared.bus.command import CommandHandler
 from domain.shared.value_objects import UsuarioId
 
 

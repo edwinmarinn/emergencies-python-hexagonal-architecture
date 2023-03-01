@@ -1,4 +1,5 @@
 from typing import List
+
 from domain.shared.bus.event.DomainEvent import DomainEvent
 
 

@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from domain.emergencia.entities.EmergenciaCreatedDomainEvent import (
-    EmergenciaCreatedDomainEvent,
+from domain.emergencia.entities import EmergenciaCreatedDomainEvent
+from domain.emergencia.value_objects import (
+    EmergenciaAbscisa,
+    EmergenciaCode,
+    EmergenciaId,
 )
-from domain.emergencia.value_objects import EmergenciaId
-from domain.emergencia.value_objects import EmergenciaCode
-from domain.emergencia.value_objects import EmergenciaAbscisa
 from domain.shared.aggregate import AggregateRoot
 from domain.shared.value_objects import UsuarioId
 
