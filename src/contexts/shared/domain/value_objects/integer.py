@@ -2,7 +2,6 @@ from .value_object import ValueObject
 
 
 class Integer(ValueObject[int]):
-
     def _validate(self, value: int):
         self._ensure_type(value)
 

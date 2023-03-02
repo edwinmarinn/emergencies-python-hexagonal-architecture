@@ -10,7 +10,6 @@ YEAR_SEQUENCE_REGEX = re.compile(r"^(\d{4})\.(\d+)$")
 
 
 class CodeYearAndConsecutive(ValueObject[str]):
-
     def _validate(self, value: str):
         self._ensure_valid_code(value)
 

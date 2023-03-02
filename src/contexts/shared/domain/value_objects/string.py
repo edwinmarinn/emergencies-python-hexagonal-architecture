@@ -2,7 +2,6 @@ from .value_object import ValueObject
 
 
 class String(ValueObject[str]):
-
     def _validate(self, value: str):
         self._ensure_type(value)
 

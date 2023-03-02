@@ -11,7 +11,6 @@ REGEX_FLOAT = re.compile(r"^\s*(\d+\.\d+)\s*$")
 
 
 class Abscisa(ValueObject[int]):
-
     def _validate(self, value: int):
         self._ensure_positive_value(value)
 

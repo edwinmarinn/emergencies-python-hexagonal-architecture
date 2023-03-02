@@ -2,7 +2,6 @@ from .value_object import ValueObject
 
 
 class PositiveInteger(ValueObject[int]):
-
     def _validate(self, value: int):
         self._ensure_type(value)
         self._ensure_positive_value(value)

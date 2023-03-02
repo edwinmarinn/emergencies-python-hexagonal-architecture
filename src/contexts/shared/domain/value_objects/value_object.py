@@ -4,7 +4,6 @@ T = TypeVar("T")
 
 
 class ValueObject(Generic[T]):
-
     def __init__(self, value: T):
         self._validate(value)
         self._value = value
