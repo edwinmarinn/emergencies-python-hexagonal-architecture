@@ -3,7 +3,6 @@ from typing import Union, cast
 
 from contexts.shared.domain.value_objects import ValueObject
 
-
 REGEX_ABSCISSA = re.compile(
     r"^\s*(?:K|PR)?\s*(\d{0,3})\+(\d{3}(\.\d+)?)\s*$", re.IGNORECASE
 )
@@ -12,8 +11,8 @@ REGEX_FLOAT = re.compile(r"^\s*(\d+\.\d+)\s*$")
 
 
 class Abscisa(ValueObject[int]):
-    def __init__(self, value: int):
-        super().__init__(value)
+
+    def _validate(self, value: int):
         self._ensure_positive_value(value)
 
     @staticmethod

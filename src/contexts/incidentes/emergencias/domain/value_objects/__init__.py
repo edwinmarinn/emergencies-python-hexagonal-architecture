@@ -1,3 +1,3 @@
-from .EmergenciaAbscisa import EmergenciaAbscisa
-from .EmergenciaCode import EmergenciaCode
-from .EmergenciaId import EmergenciaId
+from .emergencia_abscisa import EmergenciaAbscisa
+from .emergencia_code import EmergenciaCode
+from .emergencia_id import EmergenciaId

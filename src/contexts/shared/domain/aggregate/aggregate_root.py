@@ -1,6 +1,6 @@
 from typing import List
 
-from contexts.shared.domain.bus.event.DomainEvent import DomainEvent
+from contexts.shared.domain.bus.event.domain_event import DomainEvent
 
 
 class AggregateRoot:

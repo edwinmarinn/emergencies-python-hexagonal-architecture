@@ -1,3 +1,3 @@
-from .Abscisa import Abscisa
-from .CodeYearAndConsecutive import CodeYearAndConsecutive
-from .UsuarioId import UsuarioId
+from .abscisa import Abscisa
+from .code_year_and_consecutive import CodeYearAndConsecutive
+from .usuario_id import UsuarioId

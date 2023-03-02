@@ -1,2 +1,2 @@
-from .Command import Command
-from .CommandHandler import CommandHandler
+from .command import Command
+from .command_handler import CommandHandler

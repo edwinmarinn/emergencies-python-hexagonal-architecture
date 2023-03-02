@@ -1,1 +1,1 @@
-from .AggregateRoot import AggregateRoot
+from .aggregate_root import AggregateRoot

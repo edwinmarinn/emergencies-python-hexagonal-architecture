@@ -38,4 +38,3 @@ class TestCodeYearAndConsecutive:
         current_code = CodeYearAndConsecutive("2021.02000")
         next_code = current_code.next()
         assert next_code.value == "2022.00001"
-

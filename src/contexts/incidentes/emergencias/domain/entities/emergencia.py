@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-from .EmergenciaCreatedDomainEvent import EmergenciaCreatedDomainEvent
 from contexts.incidentes.emergencias.domain.value_objects import (
     EmergenciaAbscisa,
     EmergenciaCode,
@@ -8,6 +5,8 @@ from contexts.incidentes.emergencias.domain.value_objects import (
 )
 from contexts.incidentes.shared.domain.value_objects import UsuarioId
 from contexts.shared.domain.aggregate import AggregateRoot
+
+from .emergencia_created_domain_event import EmergenciaCreatedDomainEvent
 
 
 class Emergencia(AggregateRoot):
