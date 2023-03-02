@@ -8,9 +8,9 @@ class ValueObject(Generic[T]):
         self._validate(value)
         self._value = value
 
-    def _validate(self, value: T):
+    def _validate(self, value: T) -> None:
         pass
 
     @property
-    def value(self):
+    def value(self) -> T:
         return self._value
