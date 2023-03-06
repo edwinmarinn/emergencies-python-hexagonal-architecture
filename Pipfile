@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pytest = "==7.2.1"
+time-machine = "~=2.6"
+
+[dev-packages]
+black = "==23.1.0"
+mypy = "==1.0.1"
+isort = "==5.12.0"
+
+[requires]
+python_version = "3.10"
