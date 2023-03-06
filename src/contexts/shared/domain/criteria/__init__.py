@@ -1,5 +1,5 @@
 from .criteria import Criteria
-from .filter import Filter
+from .filter import Filter, FilterDict
 from .filter_field import FilterField
 from .filter_operator import FilterOperator
 from .filter_value import FilterValue

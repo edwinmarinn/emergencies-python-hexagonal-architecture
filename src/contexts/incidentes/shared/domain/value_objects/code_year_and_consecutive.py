@@ -1,6 +1,5 @@
 import datetime
 import re
-from typing import Optional
 
 from contexts.shared.domain.value_objects import ValueObject
 
@@ -29,7 +28,7 @@ class CodeYearAndConsecutive(ValueObject[str]):
 
     @staticmethod
     def _generate_code(
-        previous: Optional[str] = None,
+        previous: str | None = None,
         separator=".",
         zfill_number=5,
         timezone=tz_bogota,

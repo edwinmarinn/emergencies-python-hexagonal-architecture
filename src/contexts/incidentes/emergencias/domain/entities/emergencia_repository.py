@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from contexts.incidentes.emergencias.domain.entities import Emergencia
+from contexts.incidentes.emergencias.domain.entities.emergencias import Emergencias
 from contexts.incidentes.emergencias.domain.value_objects import EmergenciaId
+from contexts.shared.domain.criteria import Criteria
 
 
 class EmergenciaRepository(ABC):
@@ -13,10 +14,10 @@ class EmergenciaRepository(ABC):
 
     @staticmethod
     @abstractmethod
-    def search(emergencia_id: EmergenciaId) -> Optional[Emergencia]:
+    async def search(emergencia_id: EmergenciaId) -> Emergencia | None:
         pass
 
-    # @staticmethod
-    # @abstractmethod
-    # def searchByCriteria(criteria: Criteria): Emergencias;
-    #     pass
+    @staticmethod
+    @abstractmethod
+    async def search_by_criteria(criteria: Criteria) -> Emergencias:
+        pass

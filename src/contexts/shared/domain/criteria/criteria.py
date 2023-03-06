@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from .filter import Filter
 from .filters import Filters
@@ -10,8 +10,8 @@ class Criteria:
         self,
         filters: Filters,
         order: Order,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
+        offset: int | None = None,
+        limit: int | None = None,
     ):
         self._filters = filters
         self._order = order
@@ -39,11 +39,11 @@ class Criteria:
         return self._order
 
     @property
-    def offset(self) -> Optional[int]:
+    def offset(self) -> int | None:
         return self._offset
 
     @property
-    def limit(self) -> Optional[int]:
+    def limit(self) -> int | None:
         return self._limit
 
     def serialize(self) -> str:

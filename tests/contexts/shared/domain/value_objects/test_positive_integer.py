@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 from contexts.shared.domain.value_objects import PositiveInteger
@@ -16,7 +18,7 @@ class TestPositiveInteger:
         "value",
         ["0", "12", "434", "45435345435"],
     )
-    def test_should_fail_instantiate_from_str(self, value: any):
+    def test_should_fail_instantiate_from_str(self, value: Any):
         with pytest.raises(TypeError):
             PositiveInteger(value)
 

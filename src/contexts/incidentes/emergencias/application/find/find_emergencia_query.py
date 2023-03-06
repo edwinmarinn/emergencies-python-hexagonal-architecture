@@ -4,5 +4,5 @@ from contexts.shared.domain.bus.query import Query
 
 
 @dataclass
-class FindVideoQuery(Query):
+class FindEmergenciaQuery(Query):
     id: str

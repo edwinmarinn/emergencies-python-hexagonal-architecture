@@ -12,7 +12,9 @@ class FilterDict(TypedDict):
 
 
 class Filter:
-    def __init__(self, field: FilterField, operator: FilterOperator, value: FilterValue):
+    def __init__(
+        self, field: FilterField, operator: FilterOperator, value: FilterValue
+    ):
         self._field = field
         self._operator = operator
         self._value = value

@@ -1,14 +1,11 @@
+from http import HTTPStatus
 from typing import Dict
 
-from Symfony\Component\HttpFoundation import Response
-from InvalidArgumentException import InvalidArgumentException
-
-ApiExceptionsHttpStatusCodeMapping
 
 class ApiExceptionsHttpStatusCodeMapping:
     def __init__(self):
         self._exceptions: Dict[str, int] = {
-            InvalidArgumentException.__name__: Response.HTTP_BAD_REQUEST,
+            ValueError.__name__: HTTPStatus.BAD_REQUEST,
         }
 
     def register(self, exception_class: str, status_code: int) -> None:

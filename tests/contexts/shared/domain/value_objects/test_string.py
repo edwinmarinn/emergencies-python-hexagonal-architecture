@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 from contexts.shared.domain.value_objects import String
@@ -16,6 +18,6 @@ class TestString:
         "value",
         [1, 2, True],
     )
-    def test_should_fail_instantiate_from_non_str(self, value):
+    def test_should_fail_instantiate_from_non_str(self, value: Any):
         with pytest.raises(TypeError):
             String(value)

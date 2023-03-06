@@ -1,5 +1,3 @@
-from typing import Optional
-
 from .order_by import OrderBy
 from .order_type import OrderType
 
@@ -25,15 +23,15 @@ class Order:
         return f"{self._order_by.value}.{self._order_type.value}"
 
     @classmethod
-    def create_desc(cls, order_by: OrderBy) -> 'Order':
+    def create_desc(cls, order_by: OrderBy) -> "Order":
         return cls(order_by, OrderType.DESC)
 
     @classmethod
-    def from_values(cls, order_by: Optional[str], order: Optional[str]) -> 'Order':
+    def from_values(cls, order_by: str | None, order: str | None) -> "Order":
         if order_by is None:
             return cls.none()
         return cls(OrderBy(order_by), OrderType(order))
 
     @classmethod
-    def none(cls) -> 'Order':
-        return cls(OrderBy(''), OrderType.NONE)
+    def none(cls) -> "Order":
+        return cls(OrderBy(""), OrderType.NONE)
