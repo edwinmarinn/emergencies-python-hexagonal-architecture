@@ -1,3 +1,4 @@
+import json
 from functools import reduce
 from typing import List
 
@@ -12,6 +13,13 @@ class Filters(Collection[Filter]):
     @classmethod
     def from_values(cls, values: List[FilterDict]) -> "Filters":
         return cls(list(map(lambda v: Filter.from_values(v), values)))
+
+    @classmethod
+    def from_json_str(cls, values: str) -> "Filters":
+        _values = json.loads(values)
+        if type(_values != list):
+            raise ValueError("The vales should be a valid JSON list")
+        return cls.from_values(_values)
 
     def add(self, filter_: Filter) -> "Filters":
         filters = self.items + [filter_]

@@ -1,6 +1,4 @@
-# Script to source code
-RED='\033[0;31m'
-NO_COLOR='\033[0m' # No Color
+# Script to format source code
 
 echo "Black src"
 black ./src

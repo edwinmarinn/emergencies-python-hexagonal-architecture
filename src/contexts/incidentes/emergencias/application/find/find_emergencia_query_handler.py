@@ -1,6 +1,6 @@
+from contexts.incidentes.emergencias.domain.value_objects import EmergenciaId
 from contexts.shared.domain.bus.query import QueryHandler
 
-from ...domain.value_objects import EmergenciaId
 from .emergencia_finder import EmergenciaFinder
 from .emergencia_response import EmergenciaResponse
 from .emergencia_response_converter import EmergenciaResponseConverter
