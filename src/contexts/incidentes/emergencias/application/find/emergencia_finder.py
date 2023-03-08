@@ -10,6 +10,6 @@ class EmergenciaFinder:
     def __init__(self, repository: EmergenciaRepository):
         self._finder = EmergenciaFinderDomain(repository)
 
-    async def __call__(self, _id: EmergenciaId) -> Emergencia | None:
+    async def __call__(self, _id: EmergenciaId) -> Emergencia:
         emergencia = await self._finder(_id)
         return emergencia

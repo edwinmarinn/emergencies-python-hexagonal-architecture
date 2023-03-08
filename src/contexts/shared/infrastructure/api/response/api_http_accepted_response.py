@@ -8,8 +8,9 @@ from .api_http_response import ApiHttpResponse
 
 class ApiHttpAcceptedResponse(ApiHttpResponse):
     def __init__(
-        self, current_url: str, request_id: Uuid, headers: Dict[str, str] = None
+        self, current_url: str, request_id: Uuid, headers: Dict[str, str] | None = None
     ):
+        headers = headers or {}
         super().__init__(
             [],
             HTTPStatus.ACCEPTED,

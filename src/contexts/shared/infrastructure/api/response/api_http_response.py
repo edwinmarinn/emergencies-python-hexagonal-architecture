@@ -1,18 +1,18 @@
 from abc import ABC
 from http import HTTPStatus
-from typing import Dict
+from typing import Any, Dict
 
 
 class ApiHttpResponse(ABC):
     def __init__(
         self,
-        data: any,
+        data: Any,
         status_code: int = HTTPStatus.OK,
-        headers: Dict[str, str] = None,
+        headers: Dict[str, str] | None = None,
     ):
         self._data = data or {}
         self._status_code = status_code
-        self._headers = headers
+        self._headers = headers or {}
 
     @property
     def data(self):

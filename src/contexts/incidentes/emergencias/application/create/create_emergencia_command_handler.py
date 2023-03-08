@@ -15,9 +15,9 @@ class CreateEmergenciaCommandHandler(CommandHandler):
     def __init__(self, creator: EmergenciaCreator):
         self._creator = creator
 
-    def __call__(self, command: CreateEmergenciaCommand):
+    async def __call__(self, command: CreateEmergenciaCommand):
         _id = EmergenciaId(command.id)
         abscisa = EmergenciaAbscisa(command.abscisa)
         usuario_id = UsuarioId(command.usuario_id)
 
-        self._creator.create(_id=_id, abscisa=abscisa, usuario_id=usuario_id)
+        await self._creator.create(_id=_id, abscisa=abscisa, usuario_id=usuario_id)

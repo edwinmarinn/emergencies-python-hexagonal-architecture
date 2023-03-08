@@ -5,7 +5,7 @@ from contexts.incidentes.emergencias.domain.entities import Emergencia
 
 
 class EmergenciaResponseConverter:
-    def __call__(self, emergencia: Emergencia):
+    def __call__(self, emergencia: Emergencia) -> EmergenciaResponse:
         return EmergenciaResponse(
             id=emergencia.id.value,
             code=emergencia.code.value,

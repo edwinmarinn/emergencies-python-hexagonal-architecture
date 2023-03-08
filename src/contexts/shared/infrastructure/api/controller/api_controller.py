@@ -27,9 +27,9 @@ class ApiController(ABC):
     def dispatch(self, command: Command) -> None:
         self._command_bus.dispatch(command)
 
-    def ask(self, query: Query) -> Response:
+    def ask(self, query: Query) -> Response | None:
         return self._query_bus.ask(query)
 
     def _register_exceptions(self) -> None:
-        for exception, http_code in self.exceptions():
+        for exception, http_code in self.exceptions().items():
             self._exception_handler.register(exception, http_code)

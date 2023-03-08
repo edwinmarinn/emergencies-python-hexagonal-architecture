@@ -13,15 +13,16 @@ class EmergenciaFinder:
     def __init__(self, repository: EmergenciaRepository):
         self._repository = repository
 
-    async def __call__(self, _id: EmergenciaId) -> Emergencia | None:
+    async def __call__(self, _id: EmergenciaId) -> Emergencia:
         emergencia = await self._repository.search(_id)
-        self._ensure_emergencia_exists(_id, emergencia)
+        emergencia = self._ensure_emergencia_exists(_id, emergencia)
 
         return emergencia
 
     @staticmethod
     def _ensure_emergencia_exists(
-        _id: EmergenciaId, emergencia: Emergencia = None
-    ) -> None:
+        _id: EmergenciaId, emergencia: Emergencia | None = None
+    ) -> Emergencia:
         if emergencia is None:
-            raise EmergenciaNotFound
+            raise EmergenciaNotFound(_id)
+        return emergencia

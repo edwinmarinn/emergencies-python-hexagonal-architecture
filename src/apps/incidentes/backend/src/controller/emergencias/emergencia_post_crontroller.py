@@ -12,7 +12,6 @@ class EmergenciaPostController(ApiController):
     def __call__(self, request):
         command = CreateEmergenciaCommand(
             id=request.get("id"),
-            code=request.get("code"),
             abscisa=request.get("abscisa"),
             usuario_id=request.get("usuario_id"),
         )

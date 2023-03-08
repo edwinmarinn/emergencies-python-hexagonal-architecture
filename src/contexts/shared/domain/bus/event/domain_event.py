@@ -1,6 +1,8 @@
 import datetime
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
+
+from typing_extensions import Self
 
 from contexts.incidentes.shared.domain.utils.dates import date_to_string
 from contexts.shared.domain.value_objects import Uuid
@@ -8,7 +10,10 @@ from contexts.shared.domain.value_objects import Uuid
 
 class DomainEvent(ABC):
     def __init__(
-        self, aggregate_id: str, event_id: str = None, occurred_on: str = None
+        self,
+        aggregate_id: str,
+        event_id: str | None = None,
+        occurred_on: str | None = None,
     ):
         self._aggregate_id = aggregate_id
         self._event_id = event_id or Uuid.random().value
@@ -17,8 +22,8 @@ class DomainEvent(ABC):
     @classmethod
     @abstractmethod
     def from_primitives(
-        cls, aggregate_id: str, data: Dict[str, Any], event_id: str, occurred_on: str
-    ) -> "DomainEvent":
+        cls, aggregate_id: str, data: Any, event_id: str, occurred_on: str
+    ) -> Self:
         pass
 
     @staticmethod
@@ -27,7 +32,7 @@ class DomainEvent(ABC):
         pass
 
     @abstractmethod
-    def to_primitives(self) -> Dict[str, any]:
+    def to_primitives(self) -> Any:
         pass
 
     @property

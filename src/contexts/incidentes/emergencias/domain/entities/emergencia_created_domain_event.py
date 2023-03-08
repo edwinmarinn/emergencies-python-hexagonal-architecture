@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from typing_extensions import Self
+
 from contexts.shared.domain.bus.event import DomainEvent
 
 
@@ -14,8 +16,8 @@ class EmergenciaCreatedDomainEvent(DomainEvent):
         self,
         _id: str,
         data: EmergenciaCreatedDomainEventData,
-        event_id: str = None,
-        occurred_on: str = None,
+        event_id: str | None = None,
+        occurred_on: str | None = None,
     ):
         super().__init__(_id, event_id, occurred_on)
         self._data = data
@@ -31,7 +33,7 @@ class EmergenciaCreatedDomainEvent(DomainEvent):
         data: EmergenciaCreatedDomainEventData,
         event_id: str,
         occurred_on: str,
-    ) -> "EmergenciaCreatedDomainEvent":
+    ) -> Self:
         return cls(
             _id=aggregate_id,
             data=data,

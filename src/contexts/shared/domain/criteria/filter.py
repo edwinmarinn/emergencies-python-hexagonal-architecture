@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from typing_extensions import Self
+
 from .filter_field import FilterField
 from .filter_operator import FilterOperator
 from .filter_value import FilterValue
@@ -20,7 +22,7 @@ class Filter:
         self._value = value
 
     @classmethod
-    def from_values(cls, values: FilterDict) -> "Filter":
+    def from_values(cls, values: FilterDict) -> Self:
         return cls(
             FilterField(values["field"]),
             FilterOperator(values["operator"]),

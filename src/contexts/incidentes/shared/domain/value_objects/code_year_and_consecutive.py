@@ -1,6 +1,8 @@
 import datetime
 import re
 
+from typing_extensions import Self
+
 from contexts.shared.domain.value_objects import ValueObject
 
 tz_bogota = datetime.timezone(-datetime.timedelta(hours=5), "America/Bogota")
@@ -63,10 +65,9 @@ class CodeYearAndConsecutive(ValueObject[str]):
         return f"{year}{separator}{counter_str}"
 
     @classmethod
-    def generate(
-        cls, previous: "CodeYearAndConsecutive" = None
-    ) -> "CodeYearAndConsecutive":
-        return cls(cls._generate_code(previous))
+    def generate(cls, previous: Self | None = None) -> Self:
+        value = previous.value if previous else None
+        return cls(cls._generate_code(value))
 
-    def next(self):
-        return CodeYearAndConsecutive(self._generate_code(self.value))
+    def next(self) -> Self:
+        return self.__class__(self._generate_code(self.value))

@@ -1,6 +1,8 @@
 import re
 from typing import Union, cast
 
+from typing_extensions import Self
+
 from contexts.shared.domain.value_objects import ValueObject
 
 REGEX_ABSCISSA = re.compile(
@@ -37,6 +39,7 @@ class Abscisa(ValueObject[int]):
         if type(abscissa_str) == str:
             abscissa_str = abscissa_str.replace(",", ".")
 
+        abscissa_str = cast(str, abscissa_str)
         match_int = REGEX_INT.match(abscissa_str)
         if match_int:
             return int(match_int.group(1))
@@ -53,5 +56,5 @@ class Abscisa(ValueObject[int]):
         raise ValueError(f"{abscissa_str} is not a valid abscisa")
 
     @classmethod
-    def create(cls, value: Union[str, int, float]) -> "Abscisa":
+    def create(cls, value: Union[str, int, float]) -> Self:
         return cls(cls._create_primitive(value))
