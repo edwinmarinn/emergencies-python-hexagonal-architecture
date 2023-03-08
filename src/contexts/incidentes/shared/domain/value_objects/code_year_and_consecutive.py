@@ -63,8 +63,8 @@ class CodeYearAndConsecutive(ValueObject[str]):
         return f"{year}{separator}{counter_str}"
 
     @classmethod
-    def generate(cls) -> "CodeYearAndConsecutive":
-        return cls(cls._generate_code())
+    def generate(cls, previous: "CodeYearAndConsecutive" = None) -> "CodeYearAndConsecutive":
+        return cls(cls._generate_code(previous))
 
     def next(self):
         return CodeYearAndConsecutive(self._generate_code(self.value))

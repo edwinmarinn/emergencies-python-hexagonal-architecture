@@ -16,15 +16,20 @@ class EmergenciaCreator:
         self._repository = repository
         self._bus = bus
 
-    def create(
+    async def create(
         self,
         _id: EmergenciaId,
-        code: EmergenciaCode,
         abscisa: EmergenciaAbscisa,
         usuario_id: UsuarioId,
     ) -> None:
+        """
+        FIXME: handle potential race conditions on code generation
+        """
+        last_code = await self._repository.last_code()
+        next_code = EmergenciaCode.generate(last_code)
+
         emergencia = Emergencia.create(
-            _id=_id, code=code, abscisa=abscisa, usuario_id=usuario_id
+            _id=_id, code=next_code, abscisa=abscisa, usuario_id=usuario_id
         )
 
         self._repository.save(emergencia)

@@ -17,8 +17,7 @@ class CreateEmergenciaCommandHandler(CommandHandler):
 
     def __call__(self, command: CreateEmergenciaCommand):
         _id = EmergenciaId(command.id)
-        code = EmergenciaCode(command.code)
         abscisa = EmergenciaAbscisa(command.abscisa)
         usuario_id = UsuarioId(command.usuario_id)
 
-        self._creator.create(_id=_id, code=code, abscisa=abscisa, usuario_id=usuario_id)
+        self._creator.create(_id=_id, abscisa=abscisa, usuario_id=usuario_id)
