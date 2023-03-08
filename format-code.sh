@@ -11,3 +11,6 @@ isort ./src
 
 echo "Isort tests"
 isort ./tests
+
+echo "Mypy check"
+mypy ./src

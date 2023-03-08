@@ -4,15 +4,15 @@ from contexts.incidentes.emergencias.domain.entities import (
 )
 from contexts.shared.domain.criteria import Criteria, Order
 
-from .emergencia_filters import EmergenciaFilters
+from .emergencias_filters import EmergenciasFilters
 
 
-class EmergenciaLister:
+class EmergenciasLister:
     def __init__(self, repository: EmergenciaRepository):
         self._repository = repository
 
     async def __call__(
-        self, filters: EmergenciaFilters, order: Order, offset: int, limit: int
+        self, filters: EmergenciasFilters, order: Order, offset: int, limit: int
     ) -> Emergencias:
         criteria = Criteria(filters=filters, order=order, offset=offset, limit=limit)
 

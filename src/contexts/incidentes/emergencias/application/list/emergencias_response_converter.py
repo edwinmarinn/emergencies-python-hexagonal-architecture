@@ -5,7 +5,7 @@ from contexts.incidentes.emergencias.domain.entities import Emergencia, Emergenc
 from .emergencia_response import EmergenciaResponse
 
 
-class EmergenciaResponseConverter:
+class EmergenciasResponseConverter:
     @staticmethod
     def converter(emergencia: Emergencia) -> EmergenciaResponse:
         return EmergenciaResponse(
