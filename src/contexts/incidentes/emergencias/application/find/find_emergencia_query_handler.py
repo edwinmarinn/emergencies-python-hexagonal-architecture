@@ -13,7 +13,7 @@ class FindEmergenciaQueryHandler(QueryHandler):
     def __init__(self, finder: EmergenciaFinder):
         self._finder = finder
 
-    async def __call__(self, query: FindEmergenciaQuery) -> EmergenciaResponse:
+    async def __call__(self, query: FindEmergenciaQuery) -> EmergenciaResponse:  # type: ignore[override]
         _id = EmergenciaId(query.id)
         emergencia = await self._finder(_id)
         emergencia_response = self._converter(emergencia)

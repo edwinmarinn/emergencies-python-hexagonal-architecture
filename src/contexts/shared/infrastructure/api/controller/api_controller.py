@@ -24,11 +24,11 @@ class ApiController(ABC):
     def exceptions(self) -> Dict[str, int]:
         pass
 
-    def dispatch(self, command: Command) -> None:
-        self._command_bus.dispatch(command)
+    async def dispatch(self, command: Command) -> None:
+        await self._command_bus.dispatch(command)
 
-    def ask(self, query: Query) -> Response | None:
-        return self._query_bus.ask(query)
+    async def ask(self, query: Query) -> Response | None:
+        return await self._query_bus.ask(query)
 
     def _register_exceptions(self) -> None:
         for exception, http_code in self.exceptions().items():

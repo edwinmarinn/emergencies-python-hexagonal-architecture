@@ -9,13 +9,13 @@ class EmergenciaPostController(ApiController):
     def exceptions(self) -> Dict[str, int]:
         return {}
 
-    def __call__(self, request):
+    async def __call__(self, request):
         command = CreateEmergenciaCommand(
             id=request.get("id"),
             abscisa=request.get("abscisa"),
             usuario_id=request.get("usuario_id"),
         )
 
-        self.dispatch(command)
+        await self.dispatch(command)
 
         return ApiHttpCreatedResponse()

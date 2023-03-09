@@ -1,9 +1,10 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from .query import Query
 from .response import Response
 
 
 class QueryBus(ABC):
-    def ask(self, query: Query) -> Response | None:
+    @abstractmethod
+    async def ask(self, query: Query) -> Response | None:
         pass

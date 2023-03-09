@@ -16,7 +16,7 @@ class ListEmergenciasQueryHandler(QueryHandler):
     def __init__(self, lister: EmergenciasLister):
         self._lister = lister
 
-    async def __call__(self, query: ListEmergenciasQuery) -> List[EmergenciaResponse]:
+    async def __call__(self, query: ListEmergenciasQuery) -> List[EmergenciaResponse]:  # type: ignore[override]
         filters = EmergenciasFilters.from_json_str(query.filters)
         order = Order(OrderBy(query.order_by), OrderType(query.order_type))
 

@@ -10,5 +10,5 @@ class EmergenciaNotFound(DomainError):
     def error_code(self) -> str:
         return "emergencia_not_found"
 
-    def _error_message(self) -> str:
+    def error_message(self) -> str:
         return f"The emergencia {self._id.value} has not been found"

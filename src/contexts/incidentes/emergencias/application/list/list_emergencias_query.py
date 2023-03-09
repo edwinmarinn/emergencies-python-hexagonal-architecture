@@ -1,12 +1,12 @@
-from dataclasses import dataclass
-
 from contexts.shared.domain.bus.query import Query
 
 
-@dataclass
 class ListEmergenciasQuery(Query):
-    filters: str
-    order_by: str
-    order_type: str
-    offset: int
-    limit: int
+    def __init__(
+        self, filters: str, order_by: str, order_type: str, offset: int, limit: int
+    ):
+        self.filters = filters
+        self.order_by = order_by
+        self.order_type = order_type
+        self.offset = offset
+        self.limit = limit
