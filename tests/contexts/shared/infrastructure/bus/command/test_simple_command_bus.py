@@ -1,11 +1,12 @@
 import pytest
 from pytest import fixture
 
-from contexts.shared.domain.bus.command import Command, CommandHandler
-from contexts.shared.infrastructure.bus.command import (
+from contexts.shared.domain.bus.command import (
+    Command,
+    CommandHandler,
     CommandNotRegisteredError,
-    SimpleCommandBus,
 )
+from contexts.shared.infrastructure.bus.command import SimpleCommandBus
 
 
 class FakeCommand(Command):
@@ -23,8 +24,7 @@ class NotRegisteredCommand(Command):
 
 @fixture
 def simple_command_bus() -> SimpleCommandBus:
-    bus = SimpleCommandBus()
-    bus.register(FakeCommand, FakeCommandHandler())
+    bus = SimpleCommandBus([FakeCommandHandler()])
     return bus
 
 

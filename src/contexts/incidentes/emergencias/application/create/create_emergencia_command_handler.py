@@ -15,7 +15,7 @@ class CreateEmergenciaCommandHandler(CommandHandler):
     def __init__(self, creator: EmergenciaCreator):
         self._creator = creator
 
-    async def __call__(self, command: CreateEmergenciaCommand):  # type: ignore[override]
+    async def __call__(self, command: CreateEmergenciaCommand):
         _id = EmergenciaId(command.id)
         abscisa = EmergenciaAbscisa(command.abscisa)
         usuario_id = UsuarioId(command.usuario_id)

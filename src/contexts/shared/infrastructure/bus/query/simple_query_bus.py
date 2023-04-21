@@ -7,8 +7,9 @@ from contexts.shared.domain.bus.query import (
     QueryNotRegisteredError,
     Response,
 )
-
-from ..callable_first_parameter_extractor import CallableFirstParameterExtractor
+from contexts.shared.infrastructure.bus.callable_first_parameter_extractor import (
+    CallableFirstParameterExtractor,
+)
 
 
 def map_query_to_handlers(

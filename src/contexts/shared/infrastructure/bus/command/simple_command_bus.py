@@ -1,16 +1,29 @@
-from typing import Dict, Type
+from typing import Dict, List, Type
 
-from contexts.shared.domain.bus.command import Command, CommandBus, CommandHandler
+from contexts.shared.domain.bus.command import (
+    Command,
+    CommandBus,
+    CommandHandler,
+    CommandNotRegisteredError,
+)
+from contexts.shared.infrastructure.bus.callable_first_parameter_extractor import (
+    CallableFirstParameterExtractor,
+)
 
-from .command_not_registered_error import CommandNotRegisteredError
+
+def map_command_to_handlers(
+    command_handlers: List[CommandHandler],
+) -> Dict[Type[Command], CommandHandler]:
+    handlers: Dict[Type[Command], CommandHandler] = {
+        CallableFirstParameterExtractor.extract(handler): handler
+        for handler in command_handlers
+    }
+    return handlers
 
 
 class SimpleCommandBus(CommandBus):
-    def __init__(self):
-        self.handlers: Dict[Type[Command], CommandHandler] = {}
-
-    def register(self, query_class: Type[Command], handler: CommandHandler):
-        self.handlers[query_class] = handler
+    def __init__(self, command_handlers: List[CommandHandler]):
+        self.handlers = map_command_to_handlers(command_handlers)
 
     async def dispatch(self, command: Command) -> None:
         handler = self.handlers.get(type(command))
