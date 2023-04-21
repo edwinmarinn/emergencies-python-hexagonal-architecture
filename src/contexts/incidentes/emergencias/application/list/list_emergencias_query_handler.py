@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Type
 
-from contexts.shared.domain.bus.query import QueryHandler
+from contexts.shared.domain.bus.query import Query, QueryHandler
 from contexts.shared.domain.criteria import Order, OrderBy, OrderType
 
-from .emergencia_response import EmergenciaResponse
 from .emergencias_filters import EmergenciasFilters
 from .emergencias_lister import EmergenciasLister
+from .emergencias_response import EmergenciaResponse, EmergenciasResponse
 from .emergencias_response_converter import EmergenciasResponseConverter
 from .list_emergencias_query import ListEmergenciasQuery
 
@@ -16,7 +16,10 @@ class ListEmergenciasQueryHandler(QueryHandler):
     def __init__(self, lister: EmergenciasLister):
         self._lister = lister
 
-    async def __call__(self, query: ListEmergenciasQuery) -> List[EmergenciaResponse]:  # type: ignore[override]
+    def subscribed_to(self) -> Type[Query]:
+        return ListEmergenciasQuery
+
+    async def __call__(self, query: ListEmergenciasQuery) -> EmergenciasResponse:
         filters = EmergenciasFilters.from_json_str(query.filters)
         order = Order(OrderBy(query.order_by), OrderType(query.order_type))
 

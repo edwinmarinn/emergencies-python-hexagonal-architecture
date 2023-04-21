@@ -1,2 +1,1 @@
-from .query_not_registered_error import QueryNotRegisteredError
 from .simple_query_bus import SimpleQueryBus

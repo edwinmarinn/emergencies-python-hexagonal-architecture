@@ -1,11 +1,14 @@
+from typing import Type
+
 import pytest
 from pytest import fixture
 
-from contexts.shared.domain.bus.query import Query, QueryHandler
-from contexts.shared.infrastructure.bus.query import (
+from contexts.shared.domain.bus.query import (
+    Query,
+    QueryHandler,
     QueryNotRegisteredError,
-    SimpleQueryBus,
 )
+from contexts.shared.infrastructure.bus.query import SimpleQueryBus
 
 
 class FakeQuery(Query):
@@ -13,6 +16,9 @@ class FakeQuery(Query):
 
 
 class FakeQueryHandler(QueryHandler):
+    def subscribed_to(self) -> Type[Query]:
+        return FakeQuery
+
     def __call__(self, query: FakeQuery):
         raise RuntimeError("This works fine!")
 
@@ -23,8 +29,7 @@ class NotRegisteredQuery(Query):
 
 @fixture
 def simple_query_bus() -> SimpleQueryBus:
-    bus = SimpleQueryBus()
-    bus.register(FakeQuery, FakeQueryHandler())
+    bus = SimpleQueryBus([FakeQueryHandler()])
     return bus
 
 

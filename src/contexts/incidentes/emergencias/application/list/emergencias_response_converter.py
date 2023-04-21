@@ -1,8 +1,6 @@
-from typing import List
-
 from contexts.incidentes.emergencias.domain.entities import Emergencia, Emergencias
 
-from .emergencia_response import EmergenciaResponse
+from .emergencias_response import EmergenciaResponse, EmergenciasResponse
 
 
 class EmergenciasResponseConverter:
@@ -15,5 +13,5 @@ class EmergenciasResponseConverter:
             usuario_id=emergencia.usuario_id.value,
         )
 
-    def __call__(self, emergencias: Emergencias) -> List[EmergenciaResponse]:
-        return list(map(self.converter, emergencias))
+    def __call__(self, emergencias: Emergencias) -> EmergenciasResponse:
+        return EmergenciasResponse(list(map(self.converter, emergencias)))
