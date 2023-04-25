@@ -6,7 +6,7 @@ from contexts.shared.domain.bus.command import (
     CommandHandler,
     CommandNotRegisteredError,
 )
-from contexts.shared.infrastructure.bus.command import SimpleCommandBus
+from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 
 
 class FakeCommand(Command):
@@ -23,20 +23,20 @@ class NotRegisteredCommand(Command):
 
 
 @fixture
-def simple_command_bus() -> SimpleCommandBus:
-    bus = SimpleCommandBus([FakeCommandHandler()])
+def in_memory_command_bus() -> InMemoryCommandBus:
+    bus = InMemoryCommandBus([FakeCommandHandler()])
     return bus
 
 
 class TestSimpleCommandBus:
     @pytest.mark.asyncio
-    async def test_should_return_a_response_successfully(self, simple_command_bus):
+    async def test_should_return_a_response_successfully(self, in_memory_command_bus):
         with pytest.raises(RuntimeError, match="This works fine!"):
-            await simple_command_bus.dispatch(FakeCommand())
+            await in_memory_command_bus.dispatch(FakeCommand())
 
     @pytest.mark.asyncio
     async def test_should_raise_an_exception_dispatching_a_non_registered_command(
-        self, simple_command_bus
+        self, in_memory_command_bus
     ):
         with pytest.raises(CommandNotRegisteredError):
-            await simple_command_bus.dispatch(NotRegisteredCommand())
+            await in_memory_command_bus.dispatch(NotRegisteredCommand())

@@ -34,4 +34,4 @@ class EmergenciaCreator:
 
         self._repository.save(emergencia)
 
-        self._bus.publish(*emergencia.pullDomainEvents())
+        self._bus.publish(*emergencia.pull_domain_events())

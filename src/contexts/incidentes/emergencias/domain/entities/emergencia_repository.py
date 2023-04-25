@@ -10,22 +10,18 @@ from contexts.shared.domain.criteria import Criteria
 
 
 class EmergenciaRepository(ABC):
-    @staticmethod
     @abstractmethod
-    def save(emergencia: Emergencia) -> None:
+    def save(self, emergencia: Emergencia) -> None:
         pass
 
-    @staticmethod
     @abstractmethod
-    async def search(emergencia_id: EmergenciaId) -> Emergencia | None:
+    async def search(self, emergencia_id: EmergenciaId) -> Emergencia | None:
         pass
 
-    @staticmethod
     @abstractmethod
-    async def search_by_criteria(criteria: Criteria) -> Emergencias:
+    async def search_by_criteria(self, criteria: Criteria) -> Emergencias:
         pass
 
-    @staticmethod
     @abstractmethod
-    async def last_code() -> EmergenciaCode | None:
+    async def last_code(self) -> EmergenciaCode | None:
         pass

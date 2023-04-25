@@ -1,1 +1,1 @@
-from .simple_query_bus import SimpleQueryBus
+from .in_memory_query_bus import InMemoryQueryBus

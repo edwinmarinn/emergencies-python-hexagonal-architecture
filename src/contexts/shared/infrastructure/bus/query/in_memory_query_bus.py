@@ -22,7 +22,7 @@ def map_query_to_handlers(
     return handlers
 
 
-class SimpleQueryBus(QueryBus):
+class InMemoryQueryBus(QueryBus):
     def __init__(self, query_handlers: List[QueryHandler]):
         self.handlers = map_query_to_handlers(query_handlers)
 

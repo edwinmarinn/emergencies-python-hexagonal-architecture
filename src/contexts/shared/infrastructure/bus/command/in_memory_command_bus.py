@@ -21,7 +21,7 @@ def map_command_to_handlers(
     return handlers
 
 
-class SimpleCommandBus(CommandBus):
+class InMemoryCommandBus(CommandBus):
     def __init__(self, command_handlers: List[CommandHandler]):
         self.handlers = map_command_to_handlers(command_handlers)
 

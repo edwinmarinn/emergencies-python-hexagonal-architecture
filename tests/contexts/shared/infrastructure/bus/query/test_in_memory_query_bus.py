@@ -8,7 +8,7 @@ from contexts.shared.domain.bus.query import (
     QueryHandler,
     QueryNotRegisteredError,
 )
-from contexts.shared.infrastructure.bus.query import SimpleQueryBus
+from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
 
 
 class FakeQuery(Query):
@@ -28,20 +28,20 @@ class NotRegisteredQuery(Query):
 
 
 @fixture
-def simple_query_bus() -> SimpleQueryBus:
-    bus = SimpleQueryBus([FakeQueryHandler()])
+def in_memory_query_bus() -> InMemoryQueryBus:
+    bus = InMemoryQueryBus([FakeQueryHandler()])
     return bus
 
 
 class TestSimpleQueryBus:
     @pytest.mark.asyncio
-    async def test_should_return_a_response_successfully(self, simple_query_bus):
+    async def test_should_return_a_response_successfully(self, in_memory_query_bus):
         with pytest.raises(RuntimeError, match="This works fine!"):
-            await simple_query_bus.ask(FakeQuery())
+            await in_memory_query_bus.ask(FakeQuery())
 
     @pytest.mark.asyncio
     async def test_should_raise_an_exception_dispatching_a_non_registered_query(
-        self, simple_query_bus
+        self, in_memory_query_bus
     ):
         with pytest.raises(QueryNotRegisteredError):
-            await simple_query_bus.ask(NotRegisteredQuery())
+            await in_memory_query_bus.ask(NotRegisteredQuery())

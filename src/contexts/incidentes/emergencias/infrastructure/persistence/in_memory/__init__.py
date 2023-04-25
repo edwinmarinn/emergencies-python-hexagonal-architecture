@@ -1,0 +1,1 @@
+from .in_memory_emergencia_repository import InMemoryEmergenciaRepository

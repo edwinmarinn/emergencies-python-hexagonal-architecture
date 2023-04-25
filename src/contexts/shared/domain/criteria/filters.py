@@ -18,8 +18,10 @@ class Filters(Collection[Filter]):
 
     @classmethod
     def from_json_str(cls, values: str):
+        if values == "":
+            values = "[]"
         _values = json.loads(values)
-        if type(_values != list):
+        if type(_values) != list:
             raise ValueError("The vales should be a valid JSON list")
         return cls.from_values(_values)
 

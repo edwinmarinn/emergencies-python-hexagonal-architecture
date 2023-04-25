@@ -1,1 +1,1 @@
-from .simple_command_bus import SimpleCommandBus
+from .in_memory_command_bus import InMemoryCommandBus
