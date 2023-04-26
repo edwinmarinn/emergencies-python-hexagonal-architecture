@@ -1,6 +1,6 @@
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 python_files = ["Test*.py", "test_*.py"]
 
 [tool.isort]

@@ -33,7 +33,7 @@ def in_memory_query_bus() -> InMemoryQueryBus:
     return bus
 
 
-class TestSimpleQueryBus:
+class TestInMemoryQueryBus:
     @pytest.mark.asyncio
     async def test_should_return_a_response_successfully(self, in_memory_query_bus):
         with pytest.raises(RuntimeError, match="This works fine!"):

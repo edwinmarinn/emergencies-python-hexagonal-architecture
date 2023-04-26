@@ -15,15 +15,18 @@ from contexts.incidentes.emergencias.application.list import (
 from contexts.incidentes.emergencias.infrastructure.persistence.in_memory import (
     InMemoryEmergenciaRepository,
 )
-from contexts.shared.domain.bus.command import CommandBus
-from contexts.shared.domain.bus.query import QueryBus
+from contexts.incidentes.emergencias_counter.application.increment import (
+    IncrementEmergenciasCounterOnEmergenciaCreated,
+)
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event import InMemoryEventBus
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
 
 emergencia_repository = InMemoryEmergenciaRepository()
 
-event_bus = InMemoryEventBus()
+
+def get_event_bus():
+    return InMemoryEventBus([IncrementEmergenciasCounterOnEmergenciaCreated()])
 
 
 def get_query_bus():
@@ -39,7 +42,7 @@ def get_command_bus():
     return InMemoryCommandBus(
         [
             CreateEmergenciaCommandHandler(
-                EmergenciaCreator(emergencia_repository, event_bus)
+                EmergenciaCreator(emergencia_repository, get_event_bus())
             )
         ]
     )
