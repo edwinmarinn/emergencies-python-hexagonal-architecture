@@ -32,6 +32,6 @@ class EmergenciaCreator:
             _id=_id, code=next_code, abscisa=abscisa, usuario_id=usuario_id
         )
 
-        self._repository.save(emergencia)
+        await self._repository.save(emergencia)
 
-        self._bus.publish(emergencia.pull_domain_events())
+        await self._bus.publish(emergencia.pull_domain_events())

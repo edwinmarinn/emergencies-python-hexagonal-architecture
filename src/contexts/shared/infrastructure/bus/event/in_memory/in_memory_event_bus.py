@@ -26,7 +26,7 @@ class InMemoryEventBus(EventBus):
     def __init__(self, event_subscribers: List[DomainEventSubscriber]):
         self.map_subscribers = map_event_to_subscribers(event_subscribers)
 
-    def publish(self, events: Iterable[DomainEvent]) -> None:
+    async def publish(self, events: Iterable[DomainEvent]) -> None:
         for event in events:
             subscribers = self.map_subscribers[type(event)]
             for subscriber in subscribers:

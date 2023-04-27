@@ -11,7 +11,7 @@ from contexts.shared.domain.criteria import Criteria
 
 class EmergenciaRepository(ABC):
     @abstractmethod
-    def save(self, emergencia: Emergencia) -> None:
+    async def save(self, emergencia: Emergencia) -> None:
         pass
 
     @abstractmethod

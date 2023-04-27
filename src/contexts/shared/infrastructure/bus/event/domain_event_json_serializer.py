@@ -20,3 +20,8 @@ class DomainEventJsonSerializer:
                 "meta": {},
             }
         )
+
+    @staticmethod
+    def serialize_bytes(domain_event: DomainEvent) -> bytes:
+        string = DomainEventJsonSerializer.serialize(domain_event)
+        return bytes(string, "utf-8")

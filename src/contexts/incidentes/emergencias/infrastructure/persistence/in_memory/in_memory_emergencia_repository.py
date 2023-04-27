@@ -16,7 +16,7 @@ class InMemoryEmergenciaRepository(EmergenciaRepository):
     def __init__(self):
         self._data: Dict[EmergenciaId, Emergencia] = {}
 
-    def save(self, emergencia: Emergencia) -> None:
+    async def save(self, emergencia: Emergencia) -> None:
         self._data[emergencia.id] = emergencia
 
     async def search(self, emergencia_id: EmergenciaId) -> Emergencia | None:

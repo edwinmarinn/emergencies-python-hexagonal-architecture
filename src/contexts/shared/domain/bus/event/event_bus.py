@@ -6,5 +6,5 @@ from contexts.shared.domain.bus.event import DomainEvent
 
 class EventBus(ABC):
     @abstractmethod
-    def publish(self, events: Iterable[DomainEvent]) -> None:
+    async def publish(self, events: Iterable[DomainEvent]) -> None:
         pass

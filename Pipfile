@@ -9,6 +9,7 @@ flask = {extras = ["async"], version = "2.2.3"}
 dependency-injector = "==4.41.0"
 typing-extensions = "*"
 pika = "*"
+aio-pika = "*"
 
 [dev-packages]
 pytest = "==7.2.1"

@@ -16,7 +16,7 @@ class RabbitMqEventBus(EventBus):
         self._connection = connection
         self._exchange_name = exchange_name
 
-    def publish(self, events: Iterable[DomainEvent]) -> None:
+    async def publish(self, events: Iterable[DomainEvent]) -> None:
         for event in events:
             self._publisher(event)
 

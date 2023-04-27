@@ -1,19 +1,19 @@
 version: '3'
 
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "5000:5000"
-    env_file:
-      - .env
-    volumes:
-      - .:/api
-    command: bash -c "pipenv run python3 apps/incidentes/backend/app.py"
+#  api:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+#    ports:
+#      - "5000:5000"
+#    env_file:
+#      - .env
+#    volumes:
+#      - .:/api
+#    command: bash -c "pipenv run python3 apps/incidentes/backend/app.py"
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
