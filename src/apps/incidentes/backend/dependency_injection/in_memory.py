@@ -20,13 +20,35 @@ from contexts.incidentes.emergencias_counter.application.increment import (
 )
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event import InMemoryEventBus
+from contexts.shared.infrastructure.bus.event.rabbit_mq import (
+    RabbitMqConfigurer,
+    RabbitMqConnection,
+    RabbitMqEventBus,
+)
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
 
 emergencia_repository = InMemoryEmergenciaRepository()
 
 
-def get_event_bus():
+def get_in_memory_event_bus():
     return InMemoryEventBus([IncrementEmergenciasCounterOnEmergenciaCreated()])
+
+
+def get_rabbit_mq_event_bus():
+    connection = RabbitMqConnection({"url": "amqp://guest:guest@rabbitmq:5672/"})
+    configurer = RabbitMqConfigurer(connection=connection)
+
+    exchange_name = "incidentes-exchange"
+    configurer.configure(
+        exchange_name=exchange_name,
+        subscribers=[IncrementEmergenciasCounterOnEmergenciaCreated()],
+    )
+
+    bus = RabbitMqEventBus(connection=connection, exchange_name=exchange_name)
+    return bus
+
+
+get_event_bus = get_rabbit_mq_event_bus
 
 
 def get_query_bus():

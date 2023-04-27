@@ -14,3 +14,10 @@ services:
     volumes:
       - .:/api
     command: bash -c "pipenv run python3 apps/incidentes/backend/app.py"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - "5672:5672"
+        - "15672:15672"
