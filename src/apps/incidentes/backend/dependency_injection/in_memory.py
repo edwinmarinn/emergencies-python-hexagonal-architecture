@@ -24,6 +24,10 @@ from contexts.shared.infrastructure.bus.event.rabbit_mq import (
     RabbitMqConfigurer,
     RabbitMqConnection,
     RabbitMqEventBus,
+    RabbitMqQueueNameFormatter,
+)
+from contexts.shared.infrastructure.bus.event.rabbit_mq import (
+    RabbitMqConnectionSettings,
 )
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
 
@@ -35,8 +39,14 @@ def get_in_memory_event_bus():
 
 
 def get_rabbit_mq_event_bus():
-    connection = RabbitMqConnection({"url": "amqp://guest:guest@rabbitmq:5672/"})
-    configurer = RabbitMqConfigurer(connection=connection)
+    connection_settings = RabbitMqConnectionSettings(
+        host="rabbitmq", port=5672, username="guest", password="guest", virtual_host="/"
+    )
+    connection = RabbitMqConnection(connection_settings=connection_settings)
+    configurer = RabbitMqConfigurer(
+        connection=connection,
+        queue_name_formatter=RabbitMqQueueNameFormatter(company="edwin_sa"),
+    )
 
     exchange_name = "incidentes-exchange"
     configurer.configure(

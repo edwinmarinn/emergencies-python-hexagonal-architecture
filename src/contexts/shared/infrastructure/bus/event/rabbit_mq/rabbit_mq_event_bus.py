@@ -33,7 +33,7 @@ class RabbitMqEventBus(EventBus):
         routing_key = event.event_name()
         message_id = event.event_id
 
-        self._connection.channel().basic_publish(
+        self._connection.channel.basic_publish(
             exchange=self._exchange_name,
             routing_key=routing_key,
             body=body,

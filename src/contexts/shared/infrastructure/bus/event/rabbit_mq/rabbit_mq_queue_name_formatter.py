@@ -3,12 +3,14 @@ from contexts.shared.domain.utils.strings import camel_case_to_snake_case
 
 
 class RabbitMqQueueNameFormatter:
-    @staticmethod
-    def format(subscriber: DomainEventSubscriber) -> str:
+    def __init__(self, company: str):
+        self._company = company
+
+    def format(self, subscriber: DomainEventSubscriber) -> str:
         subscriber_class_path = subscriber.__class__.__module__.split(".")
 
         queue_name_parts = [
-            "company",
+            self._company,
             subscriber_class_path[1],
             subscriber_class_path[2],
             subscriber_class_path[-1],
@@ -17,15 +19,13 @@ class RabbitMqQueueNameFormatter:
 
         return queue_name
 
-    @staticmethod
-    def format_retry(subscriber: DomainEventSubscriber) -> str:
-        queue_name = RabbitMqQueueNameFormatter.format(subscriber)
+    def format_retry(self, subscriber: DomainEventSubscriber) -> str:
+        queue_name = self.format(subscriber)
 
         return f"retry.{queue_name}"
 
-    @staticmethod
-    def format_dead_letter(subscriber: DomainEventSubscriber) -> str:
-        queue_name = RabbitMqQueueNameFormatter.format(subscriber)
+    def format_dead_letter(self, subscriber: DomainEventSubscriber) -> str:
+        queue_name = self.format(subscriber)
 
         return f"dead_letter.{queue_name}"
 

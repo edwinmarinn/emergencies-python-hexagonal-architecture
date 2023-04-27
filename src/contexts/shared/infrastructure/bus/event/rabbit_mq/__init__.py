@@ -1,3 +1,5 @@
 from .rabbit_mq_configure import RabbitMqConfigurer
-from .rabbit_mq_connection import RabbitMqConnection
+from .rabbit_mq_connection import RabbitMqConnection, RabbitMqConnectionSettings
 from .rabbit_mq_event_bus import RabbitMqEventBus
+from .rabbit_mq_exchange_name_formatter import RabbitMqExchangeNameFormatter
+from .rabbit_mq_queue_name_formatter import RabbitMqQueueNameFormatter
