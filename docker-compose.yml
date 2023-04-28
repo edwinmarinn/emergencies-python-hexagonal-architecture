@@ -13,7 +13,7 @@ services:
       - .env
     volumes:
       - .:/api
-    command: bash -c "pipenv run uvicorn apps.incidentes.backend_flask.app:app --host 0.0.0.0 --port 5000 --reload"
+    command: bash -c "pipenv run python3 apps/incidentes/backend_flask/run.py"
 
   api-fastapi:
     build:
@@ -27,8 +27,7 @@ services:
       - .env
     volumes:
       - .:/api
-    command: bash -c "pipenv run uvicorn apps.incidentes.backend_fastapi.app:app --host 0.0.0.0 --port 8000 --reload"
-#    command: bash -c "pipenv run apps/incidentes/backend_fastapi/run.sh"
+    command: bash -c "pipenv run python3 apps/incidentes/backend_fastapi/run.py"
 
   rabbitmq:
     image: rabbitmq:3-management-alpine

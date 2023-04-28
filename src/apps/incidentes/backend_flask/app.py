@@ -1,12 +1,9 @@
-from flask import Flask
 from asgiref.wsgi import WsgiToAsgi
+from flask import Flask
 
 from apps.incidentes.__dependency_injection import Container
 from apps.incidentes.backend_flask import views
 
-
-# The problem with Flask async views and async globals
-# https://sethmlarson.dev/flask-async-views-and-async-globals
 
 def create_app() -> Flask:
     container = Container()
@@ -26,8 +23,12 @@ def create_app() -> Flask:
     app.add_url_rule(
         "/emergencias/", "list_emergencias", views.list_emergencia, methods=["GET"]
     )
-
     return app
 
 
-app = WsgiToAsgi(create_app())
+def create_asgi_app():
+    # The problem with Flask async views and async globals
+    # https://sethmlarson.dev/flask-async-views-and-async-globals
+
+    app = WsgiToAsgi(create_app())
+    return app
