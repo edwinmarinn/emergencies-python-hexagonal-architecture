@@ -1,19 +1,10 @@
-from typing import Any, Dict, TypedDict
-
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
-from pika.exchange_type import ExchangeType
+
+from ..rabbit_mq_connection_settings import RabbitMqConnectionSettings
 
 
-class RabbitMqConnectionSettings(TypedDict):
-    host: str
-    port: int
-    virtual_host: str
-    username: str
-    password: str
-
-
-class RabbitMqConnection:
+class RabbitMqConnectionSync:
     def __init__(self, connection_settings: RabbitMqConnectionSettings):
         self._connection_settings = connection_settings
 

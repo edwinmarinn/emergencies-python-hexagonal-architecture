@@ -21,16 +21,14 @@ from contexts.incidentes.emergencias_counter.application.increment import (
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event import InMemoryEventBus
 from contexts.shared.infrastructure.bus.event.rabbit_mq import (
-    RabbitMqConfigurer,
-    RabbitMqConnection,
-    RabbitMqConnectionSettings,
-    RabbitMqEventBus,
-    RabbitMqQueueNameFormatter,
-)
-from contexts.shared.infrastructure.bus.event.rabbit_mq_async import (
     RabbitMqConfigurerAsync,
+    RabbitMqConfigurerSync,
     RabbitMqConnectionAsync,
+    RabbitMqConnectionSettings,
+    RabbitMqConnectionSync,
     RabbitMqEventBusAsync,
+    RabbitMqEventBusSync,
+    RabbitMqQueueNameFormatter,
 )
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
 
@@ -56,10 +54,10 @@ def get_rabbit_mq_connection_settings():
 
 
 def get_rabbit_mq_event_bus_sync():
-    connection = RabbitMqConnection(
+    connection = RabbitMqConnectionSync(
         connection_settings=get_rabbit_mq_connection_settings()
     )
-    configurer = RabbitMqConfigurer(
+    configurer = RabbitMqConfigurerSync(
         connection=connection,
         queue_name_formatter=RabbitMqQueueNameFormatter(company=COMPANY_NAME),
     )
@@ -69,7 +67,7 @@ def get_rabbit_mq_event_bus_sync():
         subscribers=[IncrementEmergenciasCounterOnEmergenciaCreated()],
     )
 
-    bus = RabbitMqEventBus(connection=connection, exchange_name=EXCHANGE_NAME)
+    bus = RabbitMqEventBusSync(connection=connection, exchange_name=EXCHANGE_NAME)
     return bus
 
 

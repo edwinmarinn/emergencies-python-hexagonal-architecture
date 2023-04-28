@@ -1,8 +1,10 @@
 from aio_pika import Message
 
 from contexts.shared.domain.bus.event import DomainEvent, EventBus
+from contexts.shared.infrastructure.bus.event.domain_event_json_serializer import (
+    DomainEventJsonSerializer,
+)
 
-from ..domain_event_json_serializer import DomainEventJsonSerializer
 from .rabbit_mq_connection_async import RabbitMqConnectionAsync
 
 

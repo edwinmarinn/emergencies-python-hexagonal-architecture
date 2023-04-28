@@ -1,13 +1,15 @@
 from contexts.shared.domain.bus.event import DomainEvent, EventBus
+from contexts.shared.infrastructure.bus.event.domain_event_json_serializer import (
+    DomainEventJsonSerializer,
+)
 
-from ..domain_event_json_serializer import DomainEventJsonSerializer
-from .rabbit_mq_connection import RabbitMqConnection
+from .rabbit_mq_connection_sync import RabbitMqConnectionSync
 
 
-class RabbitMqEventBus(EventBus):
+class RabbitMqEventBusSync(EventBus):
     def __init__(
         self,
-        connection: RabbitMqConnection,
+        connection: RabbitMqConnectionSync,
         exchange_name: str,
         # failover_publisher: MySqlEventBus
     ):

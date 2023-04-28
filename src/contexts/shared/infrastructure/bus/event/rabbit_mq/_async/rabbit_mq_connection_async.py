@@ -1,17 +1,11 @@
-from typing import Dict, TypedDict, cast
+from typing import Dict, cast
 
 import aio_pika
 import pamqp.common
 from aio_pika import ExchangeType, RobustChannel, RobustConnection
 from aio_pika.abc import AbstractRobustExchange, AbstractRobustQueue
 
-
-class RabbitMqConnectionSettings(TypedDict):
-    host: str
-    port: int
-    virtual_host: str
-    username: str
-    password: str
+from ..rabbit_mq_connection_settings import RabbitMqConnectionSettings
 
 
 class RabbitMqConnectionAsync:

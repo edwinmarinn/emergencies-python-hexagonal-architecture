@@ -3,13 +3,10 @@ from typing import Iterable
 from aio_pika import ExchangeType
 
 from contexts.shared.domain.bus.event import DomainEventSubscriber
-from contexts.shared.infrastructure.bus.event.rabbit_mq import (
-    RabbitMqExchangeNameFormatter,
-    RabbitMqQueueNameFormatter,
-)
-from contexts.shared.infrastructure.bus.event.rabbit_mq_async.rabbit_mq_connection_async import (
-    RabbitMqConnectionAsync,
-)
+
+from ..rabbit_mq_exchange_name_formatter import RabbitMqExchangeNameFormatter
+from ..rabbit_mq_queue_name_formatter import RabbitMqQueueNameFormatter
+from .rabbit_mq_connection_async import RabbitMqConnectionAsync
 
 
 class RabbitMqConfigurerAsync:

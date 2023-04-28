@@ -4,15 +4,15 @@ from pika.exchange_type import ExchangeType
 
 from contexts.shared.domain.bus.event import DomainEventSubscriber
 
-from .rabbit_mq_connection import RabbitMqConnection
-from .rabbit_mq_exchange_name_formatter import RabbitMqExchangeNameFormatter
-from .rabbit_mq_queue_name_formatter import RabbitMqQueueNameFormatter
+from ..rabbit_mq_exchange_name_formatter import RabbitMqExchangeNameFormatter
+from ..rabbit_mq_queue_name_formatter import RabbitMqQueueNameFormatter
+from .rabbit_mq_connection_sync import RabbitMqConnectionSync
 
 
-class RabbitMqConfigurer:
+class RabbitMqConfigurerSync:
     def __init__(
         self,
-        connection: RabbitMqConnection,
+        connection: RabbitMqConnectionSync,
         queue_name_formatter: RabbitMqQueueNameFormatter,
         message_retry_ttl=100,
     ) -> None:
