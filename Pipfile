@@ -12,6 +12,7 @@ pika = "*"
 aio-pika = "*"
 fastapi = "*"
 uvicorn = "*"
+asgiref = "*"
 
 [dev-packages]
 pytest = "==7.2.1"

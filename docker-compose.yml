@@ -13,7 +13,7 @@ services:
       - .env
     volumes:
       - .:/api
-    command: bash -c "pipenv run python3 apps/incidentes/backend_flask/app.py"
+    command: bash -c "pipenv run uvicorn apps.incidentes.backend_flask.app:app --host 0.0.0.0 --port 5000 --reload"
 
   api-fastapi:
     build:

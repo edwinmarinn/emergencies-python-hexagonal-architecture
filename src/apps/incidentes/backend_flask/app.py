@@ -1,8 +1,12 @@
 from flask import Flask
+from asgiref.wsgi import WsgiToAsgi
 
 from apps.incidentes.__dependency_injection import Container
 from apps.incidentes.backend_flask import views
 
+
+# The problem with Flask async views and async globals
+# https://sethmlarson.dev/flask-async-views-and-async-globals
 
 def create_app() -> Flask:
     container = Container()
@@ -26,6 +30,4 @@ def create_app() -> Flask:
     return app
 
 
-if __name__ == "__main__":
-    _app = create_app()
-    _app.run(host="0.0.0.0", port=5000, debug=True)
+app = WsgiToAsgi(create_app())
