@@ -1,3 +1,5 @@
+from typing_extensions import Self
+
 from contexts.incidentes.emergencias.domain.value_objects import (
     EmergenciaAbscisa,
     EmergenciaCode,
@@ -30,7 +32,7 @@ class Emergencia(AggregateRoot):
         code: EmergenciaCode,
         abscisa: EmergenciaAbscisa,
         usuario_id: UsuarioId,
-    ):
+    ) -> Self:
         emergencia = cls(_id=_id, code=code, abscisa=abscisa, usuario_id=usuario_id)
 
         emergencia.record(

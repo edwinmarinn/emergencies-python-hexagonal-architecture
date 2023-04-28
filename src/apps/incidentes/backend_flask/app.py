@@ -1,7 +1,7 @@
 from flask import Flask
 
-from apps.incidentes.backend import views
-from apps.incidentes.backend.dependency_injection import Container
+from apps.incidentes.__dependency_injection import Container
+from apps.incidentes.backend_flask import views
 
 
 def create_app() -> Flask:

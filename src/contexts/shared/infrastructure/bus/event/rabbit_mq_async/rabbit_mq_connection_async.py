@@ -2,13 +2,8 @@ from typing import Dict, TypedDict, cast
 
 import aio_pika
 import pamqp.common
-from aio_pika import (
-    ExchangeType,
-    RobustChannel,
-    RobustConnection,
-)
-from aio_pika.abc import AbstractRobustExchange
-from aio_pika.abc import AbstractRobustQueue
+from aio_pika import ExchangeType, RobustChannel, RobustConnection
+from aio_pika.abc import AbstractRobustExchange, AbstractRobustQueue
 
 
 class RabbitMqConnectionSettings(TypedDict):
@@ -25,7 +20,7 @@ class RabbitMqConnectionAsync:
 
         self._connection: RobustConnection | None = None
         self._channel: RobustChannel | None = None
-        self._exchanges: Dict[str, AbstractRobustExchange ] = {}
+        self._exchanges: Dict[str, AbstractRobustExchange] = {}
         self._queues: Dict[str, AbstractRobustQueue] = {}
 
     async def exchange(

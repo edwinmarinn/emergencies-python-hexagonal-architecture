@@ -1,19 +1,34 @@
 version: '3'
 
 services:
-#  api:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
-#    ports:
-#      - "5000:5000"
-#    env_file:
-#      - .env
-#    volumes:
-#      - .:/api
-#    command: bash -c "pipenv run python3 apps/incidentes/backend/app.py"
+  api-flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    volumes:
+      - .:/api
+    command: bash -c "pipenv run python3 apps/incidentes/backend_flask/app.py"
+
+  api-fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/api
+    command: bash -c "pipenv run uvicorn apps.incidentes.backend_fastapi.app:app --host 0.0.0.0 --port 8000 --reload"
+#    command: bash -c "pipenv run apps/incidentes/backend_fastapi/run.sh"
 
   rabbitmq:
     image: rabbitmq:3-management-alpine

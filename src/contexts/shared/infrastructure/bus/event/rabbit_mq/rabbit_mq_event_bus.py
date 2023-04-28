@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from contexts.shared.domain.bus.event import DomainEvent, EventBus
 
 from ..domain_event_json_serializer import DomainEventJsonSerializer
@@ -16,7 +14,7 @@ class RabbitMqEventBus(EventBus):
         self._connection = connection
         self._exchange_name = exchange_name
 
-    async def publish(self, events: Iterable[DomainEvent]) -> None:
+    async def publish(self, *events: DomainEvent) -> None:
         for event in events:
             self._publisher(event)
 

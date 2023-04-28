@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from aio_pika import Message
 
 from contexts.shared.domain.bus.event import DomainEvent, EventBus
@@ -18,7 +16,7 @@ class RabbitMqEventBusAsync(EventBus):
         self._connection = connection
         self._exchange_name = exchange_name
 
-    async def publish(self, events: Iterable[DomainEvent]) -> None:
+    async def publish(self, *events: DomainEvent) -> None:
         for event in events:
             await self._publisher(event)
 

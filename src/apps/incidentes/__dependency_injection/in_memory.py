@@ -47,7 +47,7 @@ def get_in_memory_event_bus():
 
 def get_rabbit_mq_connection_settings():
     return RabbitMqConnectionSettings(
-        host="localhost",
+        host="rabbitmq",
         port=5672,
         username="guest",
         password="guest",
@@ -115,7 +115,10 @@ async def get_command_bus():
 
 class InMemoryContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
-        modules=["apps.incidentes.backend.views"]
+        modules=[
+            "apps.incidentes.backend_flask.views",
+            "apps.incidentes.backend_fastapi.views",
+        ]
     )
     command_bus = providers.Singleton(get_command_bus)
     query_bus = providers.Singleton(get_query_bus)

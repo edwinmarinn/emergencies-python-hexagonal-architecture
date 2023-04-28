@@ -1,25 +1,40 @@
-from dependency_injector.wiring import Provide
-from flask import request
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 
-from apps.incidentes.backend.dependency_injection import Container
+from apps.incidentes.__dependency_injection import Container
 from contexts.incidentes.emergencias.application.create import CreateEmergenciaCommand
 from contexts.incidentes.emergencias.application.find import FindEmergenciaQuery
 from contexts.incidentes.emergencias.application.list import ListEmergenciasQuery
 from contexts.shared.domain.bus.command import CommandBus
 from contexts.shared.domain.bus.query import QueryBus
 
+router = APIRouter()
 
-async def create_emergencia(command_bus: CommandBus = Provide[Container.command_bus]):
-    data = request.get_json()
+
+class EmergenciaBody(BaseModel):
+    id: str
+    abscisa: int
+    usuario_id: str
+
+
+@router.put("/emergencias/")
+@inject
+async def create_emergencia(
+    emergencia: EmergenciaBody,
+    command_bus: CommandBus = Depends(Provide[Container.command_bus]),
+):
     command = CreateEmergenciaCommand(
-        id=data["id"], abscisa=int(data["abscisa"]), usuario_id=data["usuario_id"]
+        id=emergencia.id, abscisa=emergencia.abscisa, usuario_id=emergencia.usuario_id
     )
     await command_bus.dispatch(command)
     return {}
 
 
+@router.get("/emergencias/<emergencia_id>")
+@inject
 async def find_emergencia(
-    emergencia_id, query_bus: QueryBus = Provide[Container.query_bus]
+    emergencia_id, query_bus: QueryBus = Depends(Provide[Container.query_bus])
 ):
     query = FindEmergenciaQuery(emergencia_id)
     emergencia = await query_bus.ask(query)
@@ -29,7 +44,9 @@ async def find_emergencia(
     return {}
 
 
-async def list_emergencia(query_bus: QueryBus = Provide[Container.query_bus]):
+@router.get("/emergencias/")
+@inject
+async def list_emergencia(query_bus: QueryBus = Depends(Provide[Container.query_bus])):
     query = ListEmergenciasQuery(
         filters="", order_by="id", order_type="asc", offset=0, limit=10
     )
