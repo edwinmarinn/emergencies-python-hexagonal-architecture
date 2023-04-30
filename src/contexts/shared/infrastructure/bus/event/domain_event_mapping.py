@@ -1,6 +1,5 @@
 from functools import reduce
-from typing import Dict, Type
-from typing import Iterable
+from typing import Dict, Iterable, Type
 
 from contexts.shared.domain.bus.event import DomainEvent, DomainEventSubscriber
 

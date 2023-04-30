@@ -55,8 +55,7 @@ class InMemoryContainer(containers.DeclarativeContainer):
     )
 
     rabbit_mq_connection_async = providers.Singleton(
-        RabbitMqConnectionAsync,
-        connection_settings=rabbit_mq_connection_settings
+        RabbitMqConnectionAsync, connection_settings=rabbit_mq_connection_settings
     )
 
     rabbit_mq_connection_configurer = providers.Singleton(

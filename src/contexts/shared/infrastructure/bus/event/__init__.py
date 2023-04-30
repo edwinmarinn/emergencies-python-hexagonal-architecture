@@ -1,3 +1,3 @@
-from .domain_event_mapping import DomainEventMapping
-from .domain_event_json_serializer import DomainEventJsonSerializer
 from .domain_event_json_deserializer import DomainEventJsonDeserializer
+from .domain_event_json_serializer import DomainEventJsonSerializer
+from .domain_event_mapping import DomainEventMapping

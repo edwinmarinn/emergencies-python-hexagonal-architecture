@@ -2,17 +2,20 @@ from typing import Iterable
 
 from aio_pika import Message
 
-from contexts.shared.domain.bus.event import DomainEvent, EventBus
-from contexts.shared.domain.bus.event import DomainEventSubscriber
+from contexts.shared.domain.bus.event import (
+    DomainEvent,
+    DomainEventSubscriber,
+    EventBus,
+)
 from contexts.shared.infrastructure.bus.event.domain_event_json_serializer import (
     DomainEventJsonSerializer,
 )
 
-from .rabbit_mq_connection_async import RabbitMqConnectionAsync
-from .rabbit_mq_domain_events_consumer_async import RabbitMqDomainEventsConsumerAsync
-from ..rabbit_mq_queue_name_formatter import RabbitMqQueueNameFormatter
 from ...domain_event_json_deserializer import DomainEventJsonDeserializer
 from ...domain_event_mapping import DomainEventMapping
+from ..rabbit_mq_queue_name_formatter import RabbitMqQueueNameFormatter
+from .rabbit_mq_connection_async import RabbitMqConnectionAsync
+from .rabbit_mq_domain_events_consumer_async import RabbitMqDomainEventsConsumerAsync
 
 
 class RabbitMqEventBusAsync(EventBus):

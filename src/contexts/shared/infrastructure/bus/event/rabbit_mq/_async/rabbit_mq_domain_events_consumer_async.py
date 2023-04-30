@@ -1,7 +1,7 @@
 from aio_pika.abc import AbstractIncomingMessage
 
-from .rabbit_mq_connection_async import RabbitMqConnectionAsync
 from ...domain_event_json_deserializer import DomainEventJsonDeserializer
+from .rabbit_mq_connection_async import RabbitMqConnectionAsync
 
 
 class RabbitMqDomainEventsConsumerAsync:

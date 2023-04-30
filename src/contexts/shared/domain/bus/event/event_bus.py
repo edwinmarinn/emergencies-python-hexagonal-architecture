@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Iterable
 
-from contexts.shared.domain.bus.event import DomainEvent
-from contexts.shared.domain.bus.event import DomainEventSubscriber
+from contexts.shared.domain.bus.event import DomainEvent, DomainEventSubscriber
 
 
 class EventBus(ABC):
