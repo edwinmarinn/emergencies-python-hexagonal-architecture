@@ -14,7 +14,7 @@ class FakeDomainEventOne(DomainEvent):
 
     @staticmethod
     def event_name() -> str:
-        return "fake_event_one"
+        return "fake_domain_event_one"
 
     def to_primitives(self) -> Any:
         pass
@@ -29,7 +29,7 @@ class FakeDomainEventTwo(DomainEvent):
 
     @staticmethod
     def event_name() -> str:
-        return "fake_event_two"
+        return "fake_domain_event_two"
 
     def to_primitives(self) -> Any:
         pass

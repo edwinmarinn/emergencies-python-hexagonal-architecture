@@ -19,96 +19,14 @@ from contexts.incidentes.emergencias_counter.application.increment import (
     IncrementEmergenciasCounterOnEmergenciaCreated,
 )
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
-from contexts.shared.infrastructure.bus.event import InMemoryEventBus
 from contexts.shared.infrastructure.bus.event.rabbit_mq import (
     RabbitMqConfigurerAsync,
-    RabbitMqConfigurerSync,
     RabbitMqConnectionAsync,
     RabbitMqConnectionSettings,
-    RabbitMqConnectionSync,
     RabbitMqEventBusAsync,
-    RabbitMqEventBusSync,
     RabbitMqQueueNameFormatter,
 )
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
-
-emergencia_repository = InMemoryEmergenciaRepository()
-
-COMPANY_NAME = "devimed"
-
-EXCHANGE_NAME = "devimed_incidentes"
-
-
-def get_in_memory_event_bus():
-    return InMemoryEventBus([IncrementEmergenciasCounterOnEmergenciaCreated()])
-
-
-def get_rabbit_mq_connection_settings():
-    return RabbitMqConnectionSettings(
-        host="rabbitmq",
-        port=5672,
-        username="guest",
-        password="guest",
-        virtual_host="/",
-    )
-
-
-def get_rabbit_mq_event_bus_sync():
-    connection = RabbitMqConnectionSync(
-        connection_settings=get_rabbit_mq_connection_settings()
-    )
-    configurer = RabbitMqConfigurerSync(
-        connection=connection,
-        queue_name_formatter=RabbitMqQueueNameFormatter(company=COMPANY_NAME),
-    )
-
-    configurer.configure(
-        exchange_name=EXCHANGE_NAME,
-        subscribers=[IncrementEmergenciasCounterOnEmergenciaCreated()],
-    )
-
-    bus = RabbitMqEventBusSync(connection=connection, exchange_name=EXCHANGE_NAME)
-    return bus
-
-
-async def get_rabbit_mq_event_bus_async():
-    connection = RabbitMqConnectionAsync(
-        connection_settings=get_rabbit_mq_connection_settings()
-    )
-    configurer = RabbitMqConfigurerAsync(
-        connection=connection,
-        queue_name_formatter=RabbitMqQueueNameFormatter(company=COMPANY_NAME),
-    )
-
-    await configurer.configure(
-        exchange_name=EXCHANGE_NAME,
-        subscribers=[IncrementEmergenciasCounterOnEmergenciaCreated()],
-    )
-
-    bus = RabbitMqEventBusAsync(connection=connection, exchange_name=EXCHANGE_NAME)
-    return bus
-
-
-get_event_bus = get_rabbit_mq_event_bus_async
-
-
-def get_query_bus():
-    return InMemoryQueryBus(
-        [
-            FindEmergenciaQueryHandler(EmergenciaFinder(emergencia_repository)),
-            ListEmergenciasQueryHandler(EmergenciasLister(emergencia_repository)),
-        ]
-    )
-
-
-async def get_command_bus():
-    return InMemoryCommandBus(
-        [
-            CreateEmergenciaCommandHandler(
-                EmergenciaCreator(emergencia_repository, await get_event_bus())
-            )
-        ]
-    )
 
 
 class InMemoryContainer(containers.DeclarativeContainer):
@@ -118,5 +36,73 @@ class InMemoryContainer(containers.DeclarativeContainer):
             "apps.incidentes.backend_fastapi.views",
         ]
     )
-    command_bus = providers.Singleton(get_command_bus)
-    query_bus = providers.Singleton(get_query_bus)
+
+    company_name = providers.Object("devimed")
+
+    exchange_name = providers.Object("devimed_incidentes")
+
+    rabbit_mq_connection_settings = providers.Singleton(
+        RabbitMqConnectionSettings,
+        host="rabbitmq",
+        port=5672,
+        username="guest",
+        password="guest",
+        virtual_host="/",
+    )
+
+    queue_name_formatter = providers.Singleton(
+        RabbitMqQueueNameFormatter, company=company_name
+    )
+
+    rabbit_mq_connection_async = providers.Singleton(
+        RabbitMqConnectionAsync,
+        connection_settings=rabbit_mq_connection_settings
+    )
+
+    rabbit_mq_connection_configurer = providers.Singleton(
+        RabbitMqConfigurerAsync,
+        connection=rabbit_mq_connection_async,
+        queue_name_formatter=queue_name_formatter,
+    )
+
+    emergencia_repository = providers.Singleton(InMemoryEmergenciaRepository)
+
+    query_bus = providers.Singleton(
+        InMemoryQueryBus,
+        providers.List(
+            providers.Singleton(
+                FindEmergenciaQueryHandler,
+                finder=providers.Singleton(
+                    EmergenciaFinder, repository=emergencia_repository
+                ),
+            ),
+            providers.Singleton(
+                ListEmergenciasQueryHandler,
+                lister=providers.Singleton(
+                    EmergenciasLister, repository=emergencia_repository
+                ),
+            ),
+        ),
+    )
+
+    event_bus = providers.Singleton(
+        RabbitMqEventBusAsync,
+        connection=rabbit_mq_connection_async,
+        exchange_name=exchange_name,
+        queue_name_formatter=queue_name_formatter,
+        max_retries=10,
+    )
+
+    command_bus = providers.Singleton(
+        InMemoryCommandBus,
+        providers.List(
+            providers.Singleton(
+                CreateEmergenciaCommandHandler,
+                creator=providers.Singleton(
+                    EmergenciaCreator, repository=emergencia_repository, bus=event_bus
+                ),
+            )
+        ),
+    )
+
+    event_subscribers = providers.List(IncrementEmergenciasCounterOnEmergenciaCreated())

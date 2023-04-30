@@ -1,11 +1,18 @@
+from typing import Iterable
+
 from aio_pika import Message
 
 from contexts.shared.domain.bus.event import DomainEvent, EventBus
+from contexts.shared.domain.bus.event import DomainEventSubscriber
 from contexts.shared.infrastructure.bus.event.domain_event_json_serializer import (
     DomainEventJsonSerializer,
 )
 
 from .rabbit_mq_connection_async import RabbitMqConnectionAsync
+from .rabbit_mq_domain_events_consumer_async import RabbitMqDomainEventsConsumerAsync
+from ..rabbit_mq_queue_name_formatter import RabbitMqQueueNameFormatter
+from ...domain_event_json_deserializer import DomainEventJsonDeserializer
+from ...domain_event_mapping import DomainEventMapping
 
 
 class RabbitMqEventBusAsync(EventBus):
@@ -13,10 +20,14 @@ class RabbitMqEventBusAsync(EventBus):
         self,
         connection: RabbitMqConnectionAsync,
         exchange_name: str,
+        queue_name_formatter: RabbitMqQueueNameFormatter,
+        max_retries: int,
         # failover_publisher: MySqlEventBus
     ):
         self._connection = connection
         self._exchange_name = exchange_name
+        self._queue_name_formatter = queue_name_formatter
+        self._max_retries = max_retries
 
     async def publish(self, *events: DomainEvent) -> None:
         for event in events:
@@ -44,3 +55,22 @@ class RabbitMqEventBusAsync(EventBus):
             ),
             routing_key=routing_key,
         )
+
+    async def add_subscribers(
+        self, subscribers: Iterable[DomainEventSubscriber]
+    ) -> None:
+        deserializer = DomainEventJsonDeserializer(
+            domain_event_mapping=DomainEventMapping(subscribers)
+        )
+        rabbit_mq_consumer = RabbitMqDomainEventsConsumerAsync(
+            connection=self._connection,
+            deserializer=deserializer,
+            exchange_name=self._exchange_name,
+            max_retries=self._max_retries,
+        )
+
+        for subscriber in subscribers:
+            queue_name = self._queue_name_formatter.format(subscriber=subscriber)
+            await rabbit_mq_consumer.consume(
+                subscriber=subscriber, queue_name=queue_name
+            )
