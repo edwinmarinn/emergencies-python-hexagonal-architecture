@@ -14,7 +14,7 @@ class RabbitMqConfigurerAsync:
         self,
         connection: RabbitMqConnectionAsync,
         queue_name_formatter: RabbitMqQueueNameFormatter,
-        message_retry_ttl=1000,
+        message_retry_ttl,
     ) -> None:
         self._connection = connection
         self._queue_name_formatter = queue_name_formatter

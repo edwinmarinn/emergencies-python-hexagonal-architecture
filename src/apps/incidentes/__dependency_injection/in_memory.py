@@ -62,6 +62,7 @@ class InMemoryContainer(containers.DeclarativeContainer):
         RabbitMqConfigurerAsync,
         connection=rabbit_mq_connection_async,
         queue_name_formatter=queue_name_formatter,
+        message_retry_ttl=1000,
     )
 
     emergencia_repository = providers.Singleton(InMemoryEmergenciaRepository)
