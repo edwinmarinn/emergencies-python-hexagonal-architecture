@@ -1,7 +1,11 @@
+from aio_pika import Message
 from aio_pika.abc import AbstractIncomingMessage
 
+from ..rabbit_mq_exchange_name_formatter import RabbitMqExchangeNameFormatter
 from ...domain_event_json_deserializer import DomainEventJsonDeserializer
 from .rabbit_mq_connection_async import RabbitMqConnectionAsync
+
+_REDELIVERY_COUNT_HEADER = "redelivery_count"
 
 
 class RabbitMqDomainEventsConsumerAsync:
@@ -10,75 +14,70 @@ class RabbitMqDomainEventsConsumerAsync:
         connection: RabbitMqConnectionAsync,
         deserializer: DomainEventJsonDeserializer,
         exchange_name: str,
+        queue_name: str,
         max_retries: int,
     ):
         self._connection = connection
         self._deserializer = deserializer
         self._exchange_name = exchange_name
+        self._queue_name = queue_name
         self._max_retries = max_retries
 
-    async def consume(self, subscriber, queue_name: str) -> None:
-        try:
-            queue = await self._connection.queue(queue_name)
-            await queue.consume(self.consumer(subscriber))
-        except Exception:  # Fixme: Change for a more specific exception
-            # We don't want to raise an error if there are no messages in the queue
-            pass
+    async def consume(self, subscriber) -> None:
+        queue = await self._connection.queue(self._queue_name)
+        await queue.consume(self._consumer(subscriber))
 
-    def consumer(self, subscriber):
-        async def _consumer(message: AbstractIncomingMessage):
+    def _consumer(self, subscriber):
+        async def wrapper(message: AbstractIncomingMessage):
             event = self._deserializer.deserialize(message.body)
 
             try:
                 subscriber(event)
             except Exception as error:
-                # self.handle_consumption_error(message)
+                await self._handle_consumption_error(message)
                 raise error
 
             await message.ack()
 
-        return _consumer
+        return wrapper
 
+    async def _handle_consumption_error(self, message: AbstractIncomingMessage) -> None:
+        if self._has_been_redelivered_too_much(message):
+            await self._send_to_dead_letter(message)
+        else:
+            await self._send_to_retry(message)
 
-#     private function handleConsumptionError(AMQPEnvelope $envelope, AMQPQueue $queue): void
-#     {
-#         $this->hasBeenRedeliveredTooMuch($envelope)
-#             ? $this->sendToDeadLetter($envelope, $queue)
-#             : $this->sendToRetry($envelope, $queue);
-#
-#         $queue->ack($envelope->getDeliveryTag());
-#     }
-#
-#     private function hasBeenRedeliveredTooMuch(AMQPEnvelope $envelope): bool
-#     {
-#         return get('redelivery_count', $envelope->getHeaders(), 0) >= $this->maxRetries;
-#     }
-#
-#     private function sendToDeadLetter(AMQPEnvelope $envelope, AMQPQueue $queue): void
-#     {
-#         $this->sendMessageTo(RabbitMqExchangeNameFormatter::deadLetter($this->exchangeName), $envelope, $queue);
-#     }
-#
-#     private function sendToRetry(AMQPEnvelope $envelope, AMQPQueue $queue): void
-#     {
-#         $this->sendMessageTo(RabbitMqExchangeNameFormatter::retry($this->exchangeName), $envelope, $queue);
-#     }
-#
-#     private function sendMessageTo(string $exchangeName, AMQPEnvelope $envelope, AMQPQueue $queue): void
-#     {
-#         $headers = $envelope->getHeaders();
-#
-#         $this->connection->exchange($exchangeName)->publish(
-#             $envelope->getBody(),
-#             $queue->getName(),
-#             AMQP_NOPARAM,
-#             [
-#                 'message_id'       => $envelope->getMessageId(),
-#                 'content_type'     => $envelope->getContentType(),
-#                 'content_encoding' => $envelope->getContentEncoding(),
-#                 'priority'         => $envelope->getPriority(),
-#                 'headers'          => assoc($headers, 'redelivery_count', get('redelivery_count', $headers, 0) + 1),
-#             ]
-#         );
-#     }
-# }
+        await message.ack()
+
+    def _has_been_redelivered_too_much(self, message: AbstractIncomingMessage) -> bool:
+        return message.headers.get(_REDELIVERY_COUNT_HEADER, 0) >= self._max_retries
+
+    async def _send_to_dead_letter(self, message: AbstractIncomingMessage) -> None:
+        await self._send_message_to(
+            RabbitMqExchangeNameFormatter.dead_letter(self._exchange_name), message
+        )
+
+    async def _send_to_retry(self, message: AbstractIncomingMessage) -> None:
+        await self._send_message_to(
+            RabbitMqExchangeNameFormatter.retry(self._exchange_name), message
+        )
+
+    async def _send_message_to(
+        self, exchange_name: str, message: AbstractIncomingMessage
+    ) -> None:
+        headers = message.headers.copy()
+        headers[_REDELIVERY_COUNT_HEADER] = headers.get(_REDELIVERY_COUNT_HEADER, 0) + 1
+
+        exchange = await self._connection.exchange(exchange_name)
+
+        await exchange.publish(
+            message=Message(
+                body=message.body,
+                content_type=message.content_type,
+                content_encoding=message.content_encoding,
+                message_id=message.message_id,
+                priority=message.priority,
+                headers=headers,
+            ),
+            routing_key=self._queue_name,
+        )

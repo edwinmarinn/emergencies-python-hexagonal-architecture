@@ -65,15 +65,14 @@ class RabbitMqEventBusAsync(EventBus):
         deserializer = DomainEventJsonDeserializer(
             domain_event_mapping=DomainEventMapping(subscribers)
         )
-        rabbit_mq_consumer = RabbitMqDomainEventsConsumerAsync(
-            connection=self._connection,
-            deserializer=deserializer,
-            exchange_name=self._exchange_name,
-            max_retries=self._max_retries,
-        )
 
         for subscriber in subscribers:
             queue_name = self._queue_name_formatter.format(subscriber=subscriber)
-            await rabbit_mq_consumer.consume(
-                subscriber=subscriber, queue_name=queue_name
+            rabbit_mq_consumer = RabbitMqDomainEventsConsumerAsync(
+                connection=self._connection,
+                deserializer=deserializer,
+                exchange_name=self._exchange_name,
+                queue_name=queue_name,
+                max_retries=self._max_retries,
             )
+            await rabbit_mq_consumer.consume(subscriber=subscriber)
