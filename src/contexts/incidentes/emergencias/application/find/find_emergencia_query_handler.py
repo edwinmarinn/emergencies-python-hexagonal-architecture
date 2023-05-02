@@ -1,6 +1,6 @@
 from typing import Type
 
-from contexts.incidentes.emergencias.domain.value_objects import EmergenciaId
+from contexts.incidentes.shared.domain.emergencias.value_objects import EmergenciaId
 from contexts.shared.domain.bus.query import Query, QueryHandler
 
 from .emergencia_finder import EmergenciaFinder

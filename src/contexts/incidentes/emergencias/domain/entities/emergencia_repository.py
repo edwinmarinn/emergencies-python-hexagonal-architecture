@@ -2,10 +2,8 @@ from abc import ABC, abstractmethod
 
 from contexts.incidentes.emergencias.domain.entities import Emergencia
 from contexts.incidentes.emergencias.domain.entities.emergencias import Emergencias
-from contexts.incidentes.emergencias.domain.value_objects import (
-    EmergenciaCode,
-    EmergenciaId,
-)
+from contexts.incidentes.emergencias.domain.value_objects import EmergenciaCode
+from contexts.incidentes.shared.domain.emergencias.value_objects import EmergenciaId
 from contexts.shared.domain.criteria import Criteria
 
 

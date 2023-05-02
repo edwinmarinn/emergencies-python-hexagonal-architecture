@@ -13,5 +13,5 @@ class DomainEventSubscriber(Generic[DE], ABC):
         pass
 
     @abstractmethod
-    def __call__(self, event: DE):
+    async def __call__(self, event: DE):
         pass

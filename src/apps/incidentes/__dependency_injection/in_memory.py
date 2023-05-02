@@ -15,8 +15,16 @@ from contexts.incidentes.emergencias.application.list import (
 from contexts.incidentes.emergencias.infrastructure.persistence.in_memory import (
     InMemoryEmergenciaRepository,
 )
+from contexts.incidentes.emergencias_counter.application.find import (
+    EmergenciasCounterFinder,
+    FindEmergenciasCounterQueryHandler,
+)
 from contexts.incidentes.emergencias_counter.application.increment import (
+    EmergenciasCounterIncrementer,
     IncrementEmergenciasCounterOnEmergenciaCreated,
+)
+from contexts.incidentes.emergencias_counter.infraestructure.persistence import (
+    InMemoryEmergenciasCounterRepository,
 )
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event.rabbit_mq import (
@@ -66,6 +74,9 @@ class InMemoryContainer(containers.DeclarativeContainer):
     )
 
     emergencia_repository = providers.Singleton(InMemoryEmergenciaRepository)
+    emergencias_counter_repository = providers.Singleton(
+        InMemoryEmergenciasCounterRepository
+    )
 
     query_bus = providers.Singleton(
         InMemoryQueryBus,
@@ -80,6 +91,12 @@ class InMemoryContainer(containers.DeclarativeContainer):
                 ListEmergenciasQueryHandler,
                 lister=providers.Singleton(
                     EmergenciasLister, repository=emergencia_repository
+                ),
+            ),
+            providers.Singleton(
+                FindEmergenciasCounterQueryHandler,
+                finder=providers.Singleton(
+                    EmergenciasCounterFinder, repository=emergencias_counter_repository
                 ),
             ),
         ),
@@ -105,4 +122,13 @@ class InMemoryContainer(containers.DeclarativeContainer):
         ),
     )
 
-    event_subscribers = providers.List(IncrementEmergenciasCounterOnEmergenciaCreated())
+    event_subscribers = providers.List(
+        providers.Singleton(
+            IncrementEmergenciasCounterOnEmergenciaCreated,
+            incrementer=providers.Singleton(
+                EmergenciasCounterIncrementer,
+                repository=emergencias_counter_repository,
+                bus=event_bus,
+            ),
+        )
+    )

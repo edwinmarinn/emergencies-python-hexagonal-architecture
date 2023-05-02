@@ -1,8 +1,10 @@
+from typing import cast
+
 from aio_pika import Message
 from aio_pika.abc import AbstractIncomingMessage
 
-from ..rabbit_mq_exchange_name_formatter import RabbitMqExchangeNameFormatter
 from ...domain_event_json_deserializer import DomainEventJsonDeserializer
+from ..rabbit_mq_exchange_name_formatter import RabbitMqExchangeNameFormatter
 from .rabbit_mq_connection_async import RabbitMqConnectionAsync
 
 _REDELIVERY_COUNT_HEADER = "redelivery_count"
@@ -32,7 +34,7 @@ class RabbitMqDomainEventsConsumerAsync:
             event = self._deserializer.deserialize(message.body)
 
             try:
-                subscriber(event)
+                await subscriber(event)
             except Exception as error:
                 await self._handle_consumption_error(message)
                 raise error
@@ -50,7 +52,7 @@ class RabbitMqDomainEventsConsumerAsync:
         await message.ack()
 
     def _has_been_redelivered_too_much(self, message: AbstractIncomingMessage) -> bool:
-        return message.headers.get(_REDELIVERY_COUNT_HEADER, 0) >= self._max_retries
+        return self._get_redelivery_count_header(message) >= self._max_retries
 
     async def _send_to_dead_letter(self, message: AbstractIncomingMessage) -> None:
         await self._send_message_to(
@@ -62,11 +64,18 @@ class RabbitMqDomainEventsConsumerAsync:
             RabbitMqExchangeNameFormatter.retry(self._exchange_name), message
         )
 
+    @staticmethod
+    def _get_redelivery_count_header(message: AbstractIncomingMessage) -> int:
+        count = message.headers.get(_REDELIVERY_COUNT_HEADER, 0)
+        return cast(int, count)
+
     async def _send_message_to(
         self, exchange_name: str, message: AbstractIncomingMessage
     ) -> None:
         headers = message.headers.copy()
-        headers[_REDELIVERY_COUNT_HEADER] = headers.get(_REDELIVERY_COUNT_HEADER, 0) + 1
+        headers[_REDELIVERY_COUNT_HEADER] = (
+            self._get_redelivery_count_header(message) + 1
+        )
 
         exchange = await self._connection.exchange(exchange_name)
 

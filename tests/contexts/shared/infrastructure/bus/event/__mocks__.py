@@ -40,5 +40,5 @@ class FakeDomainEventSubscriber(DomainEventSubscriber):
     def subscribed_to() -> List[Type[DomainEvent]]:
         return [FakeDomainEventOne, FakeDomainEventTwo]
 
-    def __call__(self, event: FakeDomainEventOne | FakeDomainEventTwo):
+    async def __call__(self, event: FakeDomainEventOne | FakeDomainEventTwo):
         raise RuntimeError("This works fine!")

@@ -3,7 +3,7 @@ from contexts.incidentes.emergencias.domain.entities import (
     EmergenciaFinder as EmergenciaFinderDomain,
 )
 from contexts.incidentes.emergencias.domain.entities import EmergenciaRepository
-from contexts.incidentes.emergencias.domain.value_objects import EmergenciaId
+from contexts.incidentes.shared.domain.emergencias.value_objects import EmergenciaId
 
 
 class EmergenciaFinder:

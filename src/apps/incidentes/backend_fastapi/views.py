@@ -6,6 +6,9 @@ from apps.incidentes.__dependency_injection import Container
 from contexts.incidentes.emergencias.application.create import CreateEmergenciaCommand
 from contexts.incidentes.emergencias.application.find import FindEmergenciaQuery
 from contexts.incidentes.emergencias.application.list import ListEmergenciasQuery
+from contexts.incidentes.emergencias_counter.application.find import (
+    FindEmergenciasCounterQuery,
+)
 from contexts.shared.domain.bus.command import CommandBus
 from contexts.shared.domain.bus.query import QueryBus
 
@@ -53,3 +56,13 @@ async def list_emergencia(query_bus: QueryBus = Depends(Provide[Container.query_
     emergencias = await query_bus.ask(query)
 
     return emergencias.__dict__
+
+
+@router.get("/emergencias/count")
+@inject
+async def count_emergencias(
+    query_bus: QueryBus = Depends(Provide[Container.query_bus]),
+):
+    query = FindEmergenciasCounterQuery()
+    count = await query_bus.ask(query)
+    return count.__dict__

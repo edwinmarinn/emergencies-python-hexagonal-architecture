@@ -5,17 +5,15 @@ from typing_extensions import Self
 from contexts.shared.domain.bus.event import DomainEvent
 
 
-class EmergenciaCreatedDomainEventData(TypedDict):
-    code: str
-    abscisa: int
-    usuario_id: str
+class EmergenciasCounterIncrementedDomainEventData(TypedDict):
+    total: int
 
 
-class EmergenciaCreatedDomainEvent(DomainEvent):
+class EmergenciasCounterIncrementedDomainEvent(DomainEvent):
     def __init__(
         self,
         aggregate_id: str,
-        data: EmergenciaCreatedDomainEventData,
+        data: EmergenciasCounterIncrementedDomainEventData,
         event_id: str | None = None,
         occurred_on: str | None = None,
     ):
@@ -24,13 +22,13 @@ class EmergenciaCreatedDomainEvent(DomainEvent):
 
     @staticmethod
     def event_name() -> str:
-        return "emergencia.created"
+        return "emergencias_counter.incremented"
 
     @classmethod
     def from_primitives(
         cls,
         aggregate_id: str,
-        data: EmergenciaCreatedDomainEventData,
+        data: EmergenciasCounterIncrementedDomainEventData,
         event_id: str,
         occurred_on: str,
     ) -> Self:
@@ -41,5 +39,5 @@ class EmergenciaCreatedDomainEvent(DomainEvent):
             occurred_on=occurred_on,
         )
 
-    def to_primitives(self) -> EmergenciaCreatedDomainEventData:
+    def to_primitives(self) -> EmergenciasCounterIncrementedDomainEventData:
         return self._data

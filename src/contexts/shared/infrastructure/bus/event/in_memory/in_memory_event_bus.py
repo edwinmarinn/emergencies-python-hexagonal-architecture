@@ -30,4 +30,4 @@ class InMemoryEventBus(EventBus):
         for event in events:
             subscribers = self.map_subscribers[type(event)]
             for subscriber in subscribers:
-                subscriber(event)
+                await subscriber(event)

@@ -1,7 +1,7 @@
 import pytest
 from pytest_asyncio import fixture
 
-from contexts.shared.infrastructure.bus.event import InMemoryEventBus
+from contexts.shared.infrastructure.bus.event.in_memory import InMemoryEventBus
 
 
 @fixture

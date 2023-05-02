@@ -3,8 +3,8 @@ from typing_extensions import Self
 from contexts.incidentes.emergencias.domain.value_objects import (
     EmergenciaAbscisa,
     EmergenciaCode,
-    EmergenciaId,
 )
+from contexts.incidentes.shared.domain.emergencias.value_objects import EmergenciaId
 from contexts.incidentes.shared.domain.value_objects import UsuarioId
 from contexts.shared.domain.aggregate import AggregateRoot
 
@@ -37,7 +37,7 @@ class Emergencia(AggregateRoot):
 
         emergencia.record(
             EmergenciaCreatedDomainEvent(
-                _id=_id.value,
+                aggregate_id=_id.value,
                 data=dict(
                     code=code.value, abscisa=abscisa.value, usuario_id=usuario_id.value
                 ),

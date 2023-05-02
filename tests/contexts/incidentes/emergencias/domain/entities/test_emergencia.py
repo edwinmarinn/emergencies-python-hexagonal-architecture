@@ -2,8 +2,8 @@ from contexts.incidentes.emergencias.domain.entities import Emergencia
 from contexts.incidentes.emergencias.domain.value_objects import (
     EmergenciaAbscisa,
     EmergenciaCode,
-    EmergenciaId,
 )
+from contexts.incidentes.shared.domain.emergencias.value_objects import EmergenciaId
 from contexts.incidentes.shared.domain.value_objects import UsuarioId
 
 
