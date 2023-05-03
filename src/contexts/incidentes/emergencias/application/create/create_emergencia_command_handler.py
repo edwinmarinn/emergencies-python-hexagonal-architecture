@@ -1,6 +1,6 @@
 from contexts.incidentes.emergencias.domain.value_objects import EmergenciaAbscisa
 from contexts.incidentes.shared.domain.emergencias.value_objects import EmergenciaId
-from contexts.incidentes.shared.domain.value_objects import UsuarioId
+from contexts.incidentes.shared.domain.value_objects import UserId
 from contexts.shared.domain.bus.command import CommandHandler
 
 from .create_emergencia_command import CreateEmergenciaCommand
@@ -14,6 +14,6 @@ class CreateEmergenciaCommandHandler(CommandHandler):
     async def __call__(self, command: CreateEmergenciaCommand):
         _id = EmergenciaId(command.id)
         abscisa = EmergenciaAbscisa(command.abscisa)
-        usuario_id = UsuarioId(command.usuario_id)
+        user_id = UserId(command.user_id)
 
-        await self._creator.create(_id=_id, abscisa=abscisa, usuario_id=usuario_id)
+        await self._creator.create(_id=_id, abscisa=abscisa, user_id=user_id)

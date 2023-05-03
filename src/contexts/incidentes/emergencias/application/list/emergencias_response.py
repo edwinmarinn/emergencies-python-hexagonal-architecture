@@ -9,7 +9,7 @@ class EmergenciaResponse:
     id: str
     code: str
     abscisa: int
-    usuario_id: str
+    user_id: str
 
 
 class EmergenciasResponse(Response):

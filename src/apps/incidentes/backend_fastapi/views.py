@@ -9,6 +9,9 @@ from contexts.incidentes.emergencias.application.list import ListEmergenciasQuer
 from contexts.incidentes.emergencias_counter.application.find import (
     FindEmergenciasCounterQuery,
 )
+from contexts.incidentes.emergencias_counter_per_user.application.find import (
+    FindEmergenciasCounterPerUserQuery,
+)
 from contexts.shared.domain.bus.command import CommandBus
 from contexts.shared.domain.bus.query import QueryBus
 
@@ -18,7 +21,7 @@ router = APIRouter()
 class EmergenciaBody(BaseModel):
     id: str
     abscisa: int
-    usuario_id: str
+    user_id: str
 
 
 @router.put("/emergencias/")
@@ -28,22 +31,9 @@ async def create_emergencia(
     command_bus: CommandBus = Depends(Provide[Container.command_bus]),
 ):
     command = CreateEmergenciaCommand(
-        id=emergencia.id, abscisa=emergencia.abscisa, usuario_id=emergencia.usuario_id
+        id=emergencia.id, abscisa=emergencia.abscisa, user_id=emergencia.user_id
     )
     await command_bus.dispatch(command)
-    return {}
-
-
-@router.get("/emergencias/<emergencia_id>")
-@inject
-async def find_emergencia(
-    emergencia_id, query_bus: QueryBus = Depends(Provide[Container.query_bus])
-):
-    query = FindEmergenciaQuery(emergencia_id)
-    emergencia = await query_bus.ask(query)
-
-    if emergencia:
-        return emergencia.__dict__
     return {}
 
 
@@ -66,3 +56,27 @@ async def count_emergencias(
     query = FindEmergenciasCounterQuery()
     count = await query_bus.ask(query)
     return count.__dict__
+
+
+@router.get("/emergencias/count_per_user/{user_id}")
+@inject
+async def count_emergencias_per_user(
+    user_id: str,
+    query_bus: QueryBus = Depends(Provide[Container.query_bus]),
+):
+    query = FindEmergenciasCounterPerUserQuery(user_id=user_id)
+    count = await query_bus.ask(query)
+    return count.__dict__
+
+
+@router.get("/emergencias/{emergencia_id}")
+@inject
+async def find_emergencia(
+    emergencia_id: str, query_bus: QueryBus = Depends(Provide[Container.query_bus])
+):
+    query = FindEmergenciaQuery(emergencia_id)
+    emergencia = await query_bus.ask(query)
+
+    if emergencia:
+        return emergencia.__dict__
+    return {}

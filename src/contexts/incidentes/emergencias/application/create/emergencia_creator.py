@@ -7,7 +7,7 @@ from contexts.incidentes.emergencias.domain.value_objects import (
     EmergenciaCode,
 )
 from contexts.incidentes.shared.domain.emergencias.value_objects import EmergenciaId
-from contexts.incidentes.shared.domain.value_objects import UsuarioId
+from contexts.incidentes.shared.domain.value_objects import UserId
 from contexts.shared.domain.bus.event import EventBus
 
 
@@ -20,7 +20,7 @@ class EmergenciaCreator:
         self,
         _id: EmergenciaId,
         abscisa: EmergenciaAbscisa,
-        usuario_id: UsuarioId,
+        user_id: UserId,
     ) -> None:
         """
         FIXME: handle potential race conditions on code generation
@@ -29,7 +29,7 @@ class EmergenciaCreator:
         next_code = EmergenciaCode.generate(last_code)
 
         emergencia = Emergencia.create(
-            _id=_id, code=next_code, abscisa=abscisa, usuario_id=usuario_id
+            _id=_id, code=next_code, abscisa=abscisa, user_id=user_id
         )
 
         await self._repository.save(emergencia)

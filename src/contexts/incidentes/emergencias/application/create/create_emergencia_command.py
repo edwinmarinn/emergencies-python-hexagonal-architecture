@@ -7,4 +7,4 @@ from contexts.shared.domain.bus.command import Command
 class CreateEmergenciaCommand(Command):
     id: str
     abscisa: int
-    usuario_id: str
+    user_id: str

@@ -12,7 +12,7 @@ from contexts.shared.domain.bus.query import QueryBus
 async def create_emergencia(command_bus: CommandBus = Provide[Container.command_bus]):
     data = request.get_json()
     command = CreateEmergenciaCommand(
-        id=data["id"], abscisa=int(data["abscisa"]), usuario_id=data["usuario_id"]
+        id=data["id"], abscisa=int(data["abscisa"]), user_id=data["user_id"]
     )
     await command_bus.dispatch(command)
     return {}

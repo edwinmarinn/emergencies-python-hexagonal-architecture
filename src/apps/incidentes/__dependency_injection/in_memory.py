@@ -26,6 +26,17 @@ from contexts.incidentes.emergencias_counter.application.increment import (
 from contexts.incidentes.emergencias_counter.infraestructure.persistence import (
     InMemoryEmergenciasCounterRepository,
 )
+from contexts.incidentes.emergencias_counter_per_user.application.find import (
+    EmergenciasCounterPerUserFinder,
+    FindEmergenciasCounterPerUserQueryHandler,
+)
+from contexts.incidentes.emergencias_counter_per_user.application.increment import (
+    EmergenciasCounterPerUserIncrementer,
+    IncrementEmergenciasCounterPerUserOnEmergenciaCreated,
+)
+from contexts.incidentes.emergencias_counter_per_user.infraestructure.persistence import (
+    InMemoryEmergenciasCounterPerUserRepository,
+)
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event.rabbit_mq import (
     RabbitMqConfigurerAsync,
@@ -77,6 +88,9 @@ class InMemoryContainer(containers.DeclarativeContainer):
     emergencias_counter_repository = providers.Singleton(
         InMemoryEmergenciasCounterRepository
     )
+    emergencias_counter_per_user_repository = providers.Singleton(
+        InMemoryEmergenciasCounterPerUserRepository
+    )
 
     query_bus = providers.Singleton(
         InMemoryQueryBus,
@@ -97,6 +111,13 @@ class InMemoryContainer(containers.DeclarativeContainer):
                 FindEmergenciasCounterQueryHandler,
                 finder=providers.Singleton(
                     EmergenciasCounterFinder, repository=emergencias_counter_repository
+                ),
+            ),
+            providers.Singleton(
+                FindEmergenciasCounterPerUserQueryHandler,
+                finder=providers.Singleton(
+                    EmergenciasCounterPerUserFinder,
+                    repository=emergencias_counter_per_user_repository,
                 ),
             ),
         ),
@@ -130,5 +151,13 @@ class InMemoryContainer(containers.DeclarativeContainer):
                 repository=emergencias_counter_repository,
                 bus=event_bus,
             ),
-        )
+        ),
+        providers.Singleton(
+            IncrementEmergenciasCounterPerUserOnEmergenciaCreated,
+            incrementer=providers.Singleton(
+                EmergenciasCounterPerUserIncrementer,
+                repository=emergencias_counter_per_user_repository,
+                bus=event_bus,
+            ),
+        ),
     )
