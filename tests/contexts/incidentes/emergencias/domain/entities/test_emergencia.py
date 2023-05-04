@@ -13,7 +13,7 @@ class TestEmergencia:
             _id=EmergenciaId("bd904284-44f3-4e5b-815a-f5b5a7eb1cbf"),
             code=EmergenciaCode("2023.00001"),
             abscisa=EmergenciaAbscisa(500),
-            usuario_id=UserId("06daa82b-c733-4c8d-92cd-10074e2dd37a"),
+            user_id=UserId("06daa82b-c733-4c8d-92cd-10074e2dd37a"),
         )
 
     def test_should_create(self):
@@ -21,5 +21,5 @@ class TestEmergencia:
             _id=EmergenciaId("bd904284-44f3-4e5b-815a-f5b5a7eb1cbf"),
             code=EmergenciaCode("2023.00001"),
             abscisa=EmergenciaAbscisa(500),
-            usuario_id=UserId("06daa82b-c733-4c8d-92cd-10074e2dd37a"),
+            user_id=UserId("06daa82b-c733-4c8d-92cd-10074e2dd37a"),
         )
