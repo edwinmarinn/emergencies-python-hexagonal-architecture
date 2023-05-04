@@ -4,7 +4,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from contexts.incidentes.shared.domain.utils.dates import date_to_string
+from contexts.incidents.shared.domain.utils.dates import date_to_string
 from contexts.shared.domain.value_objects import Uuid
 
 

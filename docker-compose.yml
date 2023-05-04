@@ -13,7 +13,7 @@ services:
       - .env
     volumes:
       - .:/api
-    command: bash -c "pipenv run python3 apps/incidentes/backend_flask/run.py"
+    command: bash -c "pipenv run python3 apps/incidents/backend_flask/run.py"
 
   api-fastapi:
     build:
@@ -27,7 +27,7 @@ services:
       - .env
     volumes:
       - .:/api
-    command: bash -c "pipenv run python3 apps/incidentes/backend_fastapi/run.py"
+    command: bash -c "pipenv run python3 apps/incidents/backend_fastapi/run.py"
 
   rabbitmq:
     image: rabbitmq:3-management-alpine

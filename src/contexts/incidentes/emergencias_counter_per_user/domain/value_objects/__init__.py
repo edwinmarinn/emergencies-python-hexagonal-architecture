@@ -1,1 +1,0 @@
-from .emergencias_counter_per_user_total import EmergenciasCounterPerUserTotal
