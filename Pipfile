@@ -13,6 +13,7 @@ aio-pika = "*"
 fastapi = "*"
 uvicorn = "*"
 asgiref = "*"
+mongo = "*"
 
 [dev-packages]
 pytest = "==7.2.1"
