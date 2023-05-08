@@ -19,10 +19,12 @@ class EmergenciesCounterIncrementer:
     async def __call__(self, emergency_id: EmergencyId):
         counter = (await self._repository.search()) or self.initialize_counter()
 
-        if not counter.has_incremented(emergency_id):
-            counter.increment(emergency_id)
+        if not await self._repository.has_incremented(emergency_id=emergency_id):
+            counter = await self._repository.increment(
+                counter=counter, emergency_id=emergency_id
+            )
 
-            await self._repository.save(counter)
+            counter.record_incremented_event()
             await self._bus.publish(*counter.pull_domain_events())
 
     @staticmethod

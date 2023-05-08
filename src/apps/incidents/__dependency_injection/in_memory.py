@@ -57,9 +57,9 @@ class InMemoryContainer(containers.DeclarativeContainer):
         ]
     )
 
-    company_name = providers.Object("devimed")
+    company_name = providers.Object("company")
 
-    exchange_name = providers.Object("devimed_incidents")
+    exchange_name = providers.Object("company_incidents")
 
     rabbit_mq_connection_settings = providers.Singleton(
         RabbitMqConnectionSettings,
