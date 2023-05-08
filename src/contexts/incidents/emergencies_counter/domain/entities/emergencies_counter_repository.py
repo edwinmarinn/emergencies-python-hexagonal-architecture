@@ -7,9 +7,9 @@ from contexts.incidents.emergencies_counter.domain.entities.emergencies_counter 
 
 class EmergenciesCounterRepository(ABC):
     @abstractmethod
-    async def search(self) -> EmergenciesCounter | None:
+    async def save(self, counter: EmergenciesCounter) -> None:
         pass
 
     @abstractmethod
-    async def save(self, counter: EmergenciesCounter) -> None:
+    async def search(self) -> EmergenciesCounter | None:
         pass

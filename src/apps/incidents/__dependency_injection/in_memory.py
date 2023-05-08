@@ -1,4 +1,5 @@
 from dependency_injector import containers, providers
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from contexts.incidents.emergencies.application.create import (
     CreateEmergencyCommandHandler,
@@ -12,8 +13,8 @@ from contexts.incidents.emergencies.application.list import (
     EmergenciesLister,
     ListEmergenciesQueryHandler,
 )
-from contexts.incidents.emergencies.infrastructure.persistence.in_memory import (
-    InMemoryEmergencyRepository,
+from contexts.incidents.emergencies.infrastructure.persistence.mongodb import (
+    MongoDbEmergencyRepository,
 )
 from contexts.incidents.emergencies_counter.application.find import (
     EmergenciesCounterFinder,
@@ -23,8 +24,8 @@ from contexts.incidents.emergencies_counter.application.increment import (
     EmergenciesCounterIncrementer,
     IncrementEmergenciesCounterOnEmergencyCreated,
 )
-from contexts.incidents.emergencies_counter.infraestructure.persistence import (
-    InMemoryEmergenciesCounterRepository,
+from contexts.incidents.emergencies_counter.infraestructure.persistence.mongodb import (
+    MongodbEmergenciesCounterRepository,
 )
 from contexts.incidents.emergencies_counter_per_user.application.find import (
     EmergenciesCounterPerUserFinder,
@@ -84,10 +85,20 @@ class InMemoryContainer(containers.DeclarativeContainer):
         message_retry_ttl=1000,
     )
 
-    emergency_repository = providers.Singleton(InMemoryEmergencyRepository)
-    emergencies_counter_repository = providers.Singleton(
-        InMemoryEmergenciesCounterRepository
+    mongo_client = providers.Singleton(
+        AsyncIOMotorClient, "mongodb://root:U9cUkvLF668u9gfT@mongo:27017/"
     )
+    emergency_repository = providers.Singleton(
+        MongoDbEmergencyRepository, client=mongo_client
+    )
+    emergencies_counter_repository = providers.Singleton(
+        MongodbEmergenciesCounterRepository, client=mongo_client
+    )
+
+    # emergency_repository = providers.Singleton(InMemoryEmergencyRepository)
+    # emergencies_counter_repository = providers.Singleton(
+    #     InMemoryEmergenciesCounterRepository
+    # )
     emergencies_counter_per_user_repository = providers.Singleton(
         InMemoryEmergenciesCounterPerUserRepository
     )

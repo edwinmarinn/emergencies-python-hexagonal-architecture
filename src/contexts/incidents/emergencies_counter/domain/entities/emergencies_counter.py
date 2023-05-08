@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List, Mapping
 
 from typing_extensions import Self
 
@@ -44,3 +44,22 @@ class EmergenciesCounter(AggregateRoot):
     def has_incremented(self, emergency_id: EmergencyId) -> bool:
         exists = emergency_id in self.existing_emergencies
         return exists
+
+    def to_primitives(self) -> Dict[str, Any]:
+        return {
+            "id": self.id.value,
+            "total": self.total.value,
+            "existing_emergencies": [
+                emergency_id.value for emergency_id in self.existing_emergencies
+            ],
+        }
+
+    @classmethod
+    def from_primitives(cls, data: Mapping[str, Any]) -> Self:
+        return cls(
+            id=EmergenciesCounterId(data.get("id") or data["_id"]),
+            total=EmergenciesCounterTotal(data["total"]),
+            existing_emergencies=[
+                EmergencyId(_id) for _id in data["existing_emergencies"]
+            ],
+        )

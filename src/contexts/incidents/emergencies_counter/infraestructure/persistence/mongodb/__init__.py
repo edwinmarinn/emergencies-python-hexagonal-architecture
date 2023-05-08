@@ -1,0 +1,1 @@
+from .mongodb_emergencies_counter_repository import MongodbEmergenciesCounterRepository
