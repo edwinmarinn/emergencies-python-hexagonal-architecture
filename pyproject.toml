@@ -15,3 +15,7 @@ check_untyped_defs = true
 [[tool.mypy.overrides]]
 module = 'pika.*'
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = 'boto3_type_annotations.*'
+ignore_missing_imports = true

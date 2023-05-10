@@ -13,9 +13,10 @@ aio-pika = "*"
 fastapi = "*"
 uvicorn = "*"
 asgiref = "*"
-mongo = "*"
 motor = "*"
 motor-types = "*"
+aiobotocore = "*"
+types-aiobotocore = {extras = ["essential"], version = "*"}
 
 [dev-packages]
 pytest = "==7.2.1"

@@ -1,3 +1,5 @@
 from .domain_event_json_deserializer import DomainEventJsonDeserializer
 from .domain_event_json_serializer import DomainEventJsonSerializer
 from .domain_event_mapping import DomainEventMapping
+from .exchange_name_formatter import ExchangeNameFormatter
+from .queue_name_formatter import QueueNameFormatter

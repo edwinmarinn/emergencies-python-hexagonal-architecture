@@ -39,12 +39,12 @@ from contexts.incidents.emergencies_counter_per_user.infraestructure.persistence
     InMemoryEmergenciesCounterPerUserRepository,
 )
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
+from contexts.shared.infrastructure.bus.event import QueueNameFormatter
 from contexts.shared.infrastructure.bus.event.rabbit_mq import (
     RabbitMqConfigurerAsync,
     RabbitMqConnectionAsync,
     RabbitMqConnectionSettings,
     RabbitMqEventBusAsync,
-    RabbitMqQueueNameFormatter,
 )
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
 
@@ -70,9 +70,7 @@ class InMemoryContainer(containers.DeclarativeContainer):
         virtual_host="/",
     )
 
-    queue_name_formatter = providers.Singleton(
-        RabbitMqQueueNameFormatter, company=company_name
-    )
+    queue_name_formatter = providers.Singleton(QueueNameFormatter, company=company_name)
 
     rabbit_mq_connection_async = providers.Singleton(
         RabbitMqConnectionAsync, connection_settings=rabbit_mq_connection_settings
