@@ -1,9 +1,6 @@
 from fastapi import FastAPI
 
-from apps.incidents.__dependency_injection import Container
-from apps.incidents.__dependency_injection.configure_event_bus import (
-    configure_event_bus,
-)
+from apps.incidents.__dependency_injection import Container, configure_event_bus
 from apps.incidents.backend_fastapi import views
 
 

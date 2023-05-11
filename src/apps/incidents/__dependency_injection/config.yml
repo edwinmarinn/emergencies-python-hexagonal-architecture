@@ -1,0 +1,19 @@
+
+mongodb:
+  username: ${MONGO_ROOT_USERNAME}
+  password: ${MONGO_ROOT_PASSWORD}
+  host: ${MONGO_HOST}
+  port: ${MONGO_PORT}
+
+rabbit_mq:
+  host: ${RABBIT_MQ_HOST}
+  port: ${RABBIT_MQ_PORT}
+  username: ${RABBIT_MQ_USERNAME}
+  password: ${RABBIT_MQ_PASSWORD}
+  virtual_host: ${RABBIT_MQ_VIRTUAL_HOST}
+
+aws:
+  access_key_id: ${AWS_ACCESS_KEY_ID}
+  secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
+  account_id: ${AWS_ACCOUNT_ID}

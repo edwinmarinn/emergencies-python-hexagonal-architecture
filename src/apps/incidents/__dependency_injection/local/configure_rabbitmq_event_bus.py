@@ -1,10 +1,13 @@
 from aiormq import AMQPConnectionError
 
-from apps.incidents.__dependency_injection import Container
 from contexts.shared.domain.utils.functions import retry_on_error
 
+from .local_container import LocalContainer
 
-def configure_event_bus(container: Container, retries: int = 5, interval: int = 5):
+
+def configure_rabbitmq_event_bus(
+    container: LocalContainer, retries: int = 5, interval: int = 5
+):
     @retry_on_error(
         retries=retries, interval=interval, exception_class=AMQPConnectionError
     )

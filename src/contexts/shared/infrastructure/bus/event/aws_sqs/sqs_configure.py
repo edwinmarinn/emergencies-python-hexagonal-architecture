@@ -13,7 +13,7 @@ from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_queue_name_formatter i
 )
 
 
-class SqsConfigure:
+class SqsConfigurer:
     def __init__(
         self,
         connection_manager: SqsConnectionManager,

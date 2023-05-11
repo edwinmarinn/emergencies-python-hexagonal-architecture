@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from dependency_injector import containers, providers
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -39,17 +41,20 @@ from contexts.incidents.emergencies_counter_per_user.infraestructure.persistence
     InMemoryEmergenciesCounterPerUserRepository,
 )
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
-from contexts.shared.infrastructure.bus.event import QueueNameFormatter
-from contexts.shared.infrastructure.bus.event.rabbit_mq import (
-    RabbitMqConfigurerAsync,
-    RabbitMqConnectionAsync,
-    RabbitMqConnectionSettings,
-    RabbitMqEventBusAsync,
+from contexts.shared.infrastructure.bus.event.aws_sqs import (
+    SqsConfigurer,
+    SqsConnectionManager,
+    SqsConnectionSettings,
+    SqsEventBus,
+    SqsQueueNameFormatter,
 )
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
 
+CURRENT_DIR = Path(__file__).resolve().parent
+CONFIG_FILE = CURRENT_DIR.parent / "config.yml"
 
-class InMemoryContainer(containers.DeclarativeContainer):
+
+class AwsContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
             "apps.incidents.backend_flask.views",
@@ -57,34 +62,41 @@ class InMemoryContainer(containers.DeclarativeContainer):
         ]
     )
 
+    config = providers.Configuration(yaml_files=[CONFIG_FILE], strict=True)
+
     company_name = providers.Object("company")
 
-    exchange_name = providers.Object("company_incidents")
+    sns_topic_name = providers.Object("company_incidents")
 
-    rabbit_mq_connection_settings = providers.Singleton(
-        RabbitMqConnectionSettings,
-        host="rabbitmq",
-        port=5672,
-        username="guest",
-        password="guest",
-        virtual_host="/",
+    sqs_connection_settings = providers.Singleton(
+        SqsConnectionSettings,
+        aws_access_key_id=config.aws.access_key_id,
+        aws_secret_access_key=config.aws.secret_access_key,
+        region=config.aws.region,
+        account_id=config.aws.account_id.as_int(),
     )
 
-    queue_name_formatter = providers.Singleton(QueueNameFormatter, company=company_name)
-
-    rabbit_mq_connection_async = providers.Singleton(
-        RabbitMqConnectionAsync, connection_settings=rabbit_mq_connection_settings
+    queue_name_formatter = providers.Singleton(
+        SqsQueueNameFormatter, company=company_name
     )
 
-    rabbit_mq_connection_configurer = providers.Singleton(
-        RabbitMqConfigurerAsync,
-        connection=rabbit_mq_connection_async,
+    sqs_connection_manager = providers.Singleton(
+        SqsConnectionManager, connection_settings=sqs_connection_settings
+    )
+
+    sqs_configurer = providers.Singleton(
+        SqsConfigurer,
+        connection_manager=sqs_connection_manager,
         queue_name_formatter=queue_name_formatter,
-        message_retry_ttl=1000,
+        # message_retry_ttl=1000,
     )
 
     mongo_client = providers.Singleton(
-        AsyncIOMotorClient, "mongodb://root:U9cUkvLF668u9gfT@mongo:27017/"
+        AsyncIOMotorClient,
+        username=config.mongodb.username,
+        password=config.mongodb.password,
+        host=config.mongodb.host,
+        port=config.mongodb.port,
     )
     emergency_repository = providers.Singleton(
         MongoDbEmergencyRepository, client=mongo_client
@@ -93,10 +105,6 @@ class InMemoryContainer(containers.DeclarativeContainer):
         MongodbEmergenciesCounterRepository, client=mongo_client
     )
 
-    # emergency_repository = providers.Singleton(InMemoryEmergencyRepository)
-    # emergencies_counter_repository = providers.Singleton(
-    #     InMemoryEmergenciesCounterRepository
-    # )
     emergencies_counter_per_user_repository = providers.Singleton(
         InMemoryEmergenciesCounterPerUserRepository
     )
@@ -133,9 +141,9 @@ class InMemoryContainer(containers.DeclarativeContainer):
     )
 
     event_bus = providers.Singleton(
-        RabbitMqEventBusAsync,
-        connection=rabbit_mq_connection_async,
-        exchange_name=exchange_name,
+        SqsEventBus,
+        connection_manager=sqs_connection_manager,
+        sns_topic_name=sns_topic_name,
         queue_name_formatter=queue_name_formatter,
         max_retries=10,
     )

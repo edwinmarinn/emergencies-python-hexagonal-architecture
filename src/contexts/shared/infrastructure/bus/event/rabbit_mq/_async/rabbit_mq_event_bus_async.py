@@ -1,3 +1,4 @@
+import asyncio
 from typing import Iterable
 
 from aio_pika import Message
@@ -33,8 +34,8 @@ class RabbitMqEventBusAsync(EventBus):
         self._max_retries = max_retries
 
     async def publish(self, *events: DomainEvent) -> None:
-        for event in events:
-            await self._publisher(event)
+        tasks = [asyncio.create_task(self._publisher(event)) for event in events]
+        await asyncio.gather(*tasks)
 
     async def _publisher(self, event: DomainEvent):
         await self._publish_event(event)
