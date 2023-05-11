@@ -10,7 +10,7 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - .env
+      - .env.default
       - .env.local
     volumes:
       - .:/api
@@ -25,7 +25,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - .env.default
       - .env.local
     volumes:
       - .:/api
