@@ -3,6 +3,9 @@ from pathlib import Path
 from dependency_injector import containers, providers
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from apps.incidents.__dependency_injection.__providers.context_resource import (
+    async_resource_context_factory,
+)
 from contexts.incidents.emergencies.application.create import (
     CreateEmergencyCommandHandler,
     EmergencyCreator,
@@ -43,7 +46,7 @@ from contexts.incidents.emergencies_counter_per_user.infraestructure.persistence
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event.aws_sqs import (
     SqsConfigurer,
-    SqsConnectionManager,
+    SqsConnection,
     SqsConnectionSettings,
     SqsEventBus,
     SqsQueueNameFormatter,
@@ -80,13 +83,14 @@ class AwsContainer(containers.DeclarativeContainer):
         SqsQueueNameFormatter, company=company_name
     )
 
-    sqs_connection_manager = providers.Singleton(
-        SqsConnectionManager, connection_settings=sqs_connection_settings
+    sqs_connection = providers.Resource(
+        async_resource_context_factory(SqsConnection),
+        connection_settings=sqs_connection_settings,
     )
 
     sqs_configurer = providers.Singleton(
         SqsConfigurer,
-        connection_manager=sqs_connection_manager,
+        connection=sqs_connection,
         queue_name_formatter=queue_name_formatter,
         # message_retry_ttl=1000,
     )
@@ -142,7 +146,7 @@ class AwsContainer(containers.DeclarativeContainer):
 
     event_bus = providers.Singleton(
         SqsEventBus,
-        connection_manager=sqs_connection_manager,
+        connection=sqs_connection,
         sns_topic_name=sns_topic_name,
         queue_name_formatter=queue_name_formatter,
         max_retries=10,

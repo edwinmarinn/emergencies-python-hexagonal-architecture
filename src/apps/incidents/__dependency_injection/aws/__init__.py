@@ -1,1 +1,2 @@
 from .aws_container import AwsContainer
+from .configure_sns_sqs_event_bus import configure_sns_sqs_event_bus

@@ -20,16 +20,29 @@ class SqsConnection:
         self._sqs_client: Any = None
 
     async def __aenter__(self) -> Self:
-        self._sqs_client = await self._exit_stack.enter_async_context(
-            self._create_client("sqs")
-        )
-        self._sns_client = await self._exit_stack.enter_async_context(
-            self._create_client("sns")
-        )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self._exit_stack.__aexit__(exc_type, exc_val, exc_tb)
+
+    async def close(self):
+        await self.__aexit__(None, None, None)
+
+    @property
+    async def sns_client(self):
+        if self._sns_client is None:
+            self._sns_client = await self._exit_stack.enter_async_context(
+                self._create_client("sns")
+            )
+        return self._sns_client
+
+    @property
+    async def sqs_client(self):
+        if self._sqs_client is None:
+            self._sqs_client = await self._exit_stack.enter_async_context(
+                self._create_client("sqs")
+            )
+        return self._sqs_client
 
     def _create_client(self, service_name):
         return self._session.create_client(
@@ -40,13 +53,16 @@ class SqsConnection:
         )
 
     async def create_topic(self, name: str):
-        return await self._sns_client.create_topic(Name=name)
+        sns_client = await self.sns_client
+        return await sns_client.create_topic(Name=name)
 
     async def create_queue(self, name: str):
-        return await self._sqs_client.create_queue(QueueName=name)
+        sqs_client = await self.sqs_client
+        return await sqs_client.create_queue(QueueName=name)
 
     async def publish(self, topic_name: str, message: str, routing_key: str):
-        await self._sns_client.publish(
+        sns_client = await self.sns_client
+        await sns_client.publish(
             TopicArn=self.get_sns_arn(topic_name),
             Message=message,
             MessageAttributes={
@@ -60,13 +76,15 @@ class SqsConnection:
             queue_name=queue_name,
         )
 
-        supscription = await self._sns_client.subscribe(
+        sns_client = await self.sns_client
+
+        supscription = await sns_client.subscribe(
             TopicArn=self.get_sns_arn(topic_name),
             Protocol="sqs",
             Endpoint=self.get_sqs_arn(queue_name),
         )
 
-        await self._sns_client.set_subscription_attributes(
+        await sns_client.set_subscription_attributes(
             SubscriptionArn=supscription["SubscriptionArn"],
             AttributeName="FilterPolicy",
             AttributeValue=json.dumps({"event_type": routing_keys}),
@@ -76,6 +94,8 @@ class SqsConnection:
         sns_arn = self.get_sns_arn(topic_name)
         sqs_arn = self.get_sqs_arn(queue_name)
         sqs_url = self.get_sqs_url(queue_name)
+
+        sqs_client = await self.sqs_client
 
         access_policy = json.dumps(
             {
@@ -91,7 +111,7 @@ class SqsConnection:
             }
         )
 
-        response = await self._sqs_client.set_queue_attributes(
+        response = await sqs_client.set_queue_attributes(
             QueueUrl=sqs_url, Attributes={"Policy": access_policy}
         )
 
@@ -109,25 +129,3 @@ class SqsConnection:
         region = self._connection_settings["region"]
         account_id = self._connection_settings["account_id"]
         return f"arn:aws:sns:{region}:{account_id}:{topic_name}"
-
-
-class SqsConnectionContext:
-    def __init__(self, connection_settings: SqsConnectionSettings):
-        self._connection_settings = connection_settings
-        self._connection: SqsConnection | None = None
-
-    async def __aenter__(self) -> SqsConnection:
-        self._connection = SqsConnection(connection_settings=self._connection_settings)
-        return await self._connection.__aenter__()
-
-    async def __aexit__(self, exc_type, exc_value, exc_tb):
-        if self._connection is not None:
-            await self._connection.__aexit__(exc_type, exc_value, exc_tb)
-
-
-class SqsConnectionManager:
-    def __init__(self, connection_settings: SqsConnectionSettings):
-        self._connection_settings = connection_settings
-
-    def connect(self) -> SqsConnectionContext:
-        return SqsConnectionContext(self._connection_settings)

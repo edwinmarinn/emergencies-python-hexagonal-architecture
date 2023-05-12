@@ -85,7 +85,7 @@ class LocalContainer(containers.DeclarativeContainer):
         RabbitMqConnectionAsync, connection_settings=rabbit_mq_connection_settings
     )
 
-    rabbit_mq_connection_configurer = providers.Singleton(
+    rabbit_mq_configurer = providers.Singleton(
         RabbitMqConfigurerAsync,
         connection=rabbit_mq_connection_async,
         queue_name_formatter=queue_name_formatter,
