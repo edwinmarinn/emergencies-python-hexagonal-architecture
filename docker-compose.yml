@@ -16,20 +16,20 @@ services:
       - .:/api
     command: bash -c "pipenv run python3 apps/incidents/backend_flask/run.py"
 
-  api-fastapi:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env.default
-      - .env.local
-    volumes:
-      - .:/api
-    command: bash -c "pipenv run python3 apps/incidents/backend_fastapi/run.py"
+#  api-fastapi:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+#    ports:
+#      - "8000:8000"
+#    env_file:
+#      - .env.default
+#      - .env.local
+#    volumes:
+#      - .:/api
+#    command: bash -c "pipenv run python3 apps/incidents/backend_fastapi/run.py"
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -41,6 +41,6 @@ services:
     image: mongo
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "${MONGO_ROOT_USERNAME}"
-      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_ROOT_PASSWORD}"
+    env_file:
+      - .env.default
+      - .env.local

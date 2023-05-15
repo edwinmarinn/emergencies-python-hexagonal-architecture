@@ -1,6 +1,6 @@
 import json
 from contextlib import AsyncExitStack
-from typing import Any, List
+from typing import Any, Dict, List
 
 from aiobotocore.session import AioSession
 from typing_extensions import Self
@@ -8,6 +8,7 @@ from typing_extensions import Self
 from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_connection_settings import (
     SqsConnectionSettings,
 )
+from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_queue import SqsQueue
 
 
 class SqsConnection:
@@ -18,6 +19,9 @@ class SqsConnection:
         self._session: AioSession = AioSession()
         self._sns_client: Any = None
         self._sqs_client: Any = None
+
+        self._topics: Dict[str, Any] = {}
+        self._queues: Dict[str, SqsQueue] = {}
 
     async def __aenter__(self) -> Self:
         return self
@@ -52,13 +56,21 @@ class SqsConnection:
             aws_secret_access_key=self._connection_settings["aws_secret_access_key"],
         )
 
-    async def create_topic(self, name: str):
-        sns_client = await self.sns_client
-        return await sns_client.create_topic(Name=name)
+    async def topic(self, name: str):
+        if name not in self._topics:
+            sns_client = await self.sns_client
+            topic = await sns_client.create_topic(Name=name)
+            self._topics[name] = topic
+        return self._topics[name]
 
-    async def create_queue(self, name: str):
-        sqs_client = await self.sqs_client
-        return await sqs_client.create_queue(QueueName=name)
+    async def queue(self, name: str) -> SqsQueue:
+        if name not in self._queues:
+            sqs_client = await self.sqs_client
+            queue_response = await sqs_client.create_queue(QueueName=name)
+            self._queues[name] = await SqsQueue.create(
+                queue_response=queue_response, sqs_client=sqs_client
+            )
+        return self._queues[name]
 
     async def publish(self, topic_name: str, message: str, routing_key: str):
         sns_client = await self.sns_client

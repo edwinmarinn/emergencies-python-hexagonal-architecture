@@ -17,6 +17,7 @@ motor = "*"
 motor-types = "*"
 aiobotocore = "*"
 types-aiobotocore = {extras = ["essential"], version = "*"}
+environs = "*"
 
 [dev-packages]
 pytest = "==7.2.1"

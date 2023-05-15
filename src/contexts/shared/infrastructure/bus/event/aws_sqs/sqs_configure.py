@@ -34,7 +34,7 @@ class SqsConfigurer:
 
         names = (sns_topic_name, retry_sns_topic_name, dead_letter_sns_topic_name)
 
-        tasks = [self._connection.create_topic(name=name) for name in names]
+        tasks = [self._connection.topic(name=name) for name in names]
         await asyncio.gather(*tasks)
 
     async def _declare_queues_for_subscribers(
@@ -69,9 +69,9 @@ class SqsConfigurer:
 
         # Declare queues
         await asyncio.gather(
-            self._connection.create_queue(name=queue_name),
-            self._connection.create_queue(name=retry_queue_name),
-            self._connection.create_queue(name=dead_letter_queue_name),
+            self._connection.queue(name=queue_name),
+            self._connection.queue(name=retry_queue_name),
+            self._connection.queue(name=dead_letter_queue_name),
         )
 
         # Bind queue

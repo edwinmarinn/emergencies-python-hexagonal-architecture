@@ -6,9 +6,16 @@ from contexts.shared.domain.bus.event import (
     DomainEventSubscriber,
     EventBus,
 )
-from contexts.shared.infrastructure.bus.event import DomainEventJsonSerializer
+from contexts.shared.infrastructure.bus.event import (
+    DomainEventJsonDeserializer,
+    DomainEventJsonSerializer,
+    DomainEventMapping,
+)
 from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_connection import (
     SqsConnection,
+)
+from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_domain_events_consumer import (
+    SqsDomainEventsConsumer,
 )
 from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_queue_name_formatter import (
     SqsQueueNameFormatter,
@@ -49,4 +56,17 @@ class SqsEventBus(EventBus):
         )
 
     async def add_subscribers(self, subscribers: Iterable[DomainEventSubscriber]):
-        pass
+        deserializer = DomainEventJsonDeserializer(
+            domain_event_mapping=DomainEventMapping(subscribers)
+        )
+
+        for subscriber in subscribers:
+            queue_name = self._queue_name_formatter.format(subscriber=subscriber)
+            sqs_consumer = SqsDomainEventsConsumer(
+                connection=self._connection,
+                deserializer=deserializer,
+                topic_name=self._sns_topic_name,
+                queue_name=queue_name,
+                max_retries=self._max_retries,
+            )
+            await sqs_consumer.consume(subscriber=subscriber)
