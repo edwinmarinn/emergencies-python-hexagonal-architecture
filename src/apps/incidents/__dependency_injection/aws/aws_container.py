@@ -72,7 +72,6 @@ class AwsContainer(containers.DeclarativeContainer):
         aws_access_key_id=config.aws.access_key_id,
         aws_secret_access_key=config.aws.secret_access_key,
         region=config.aws.region,
-        account_id=config.aws.account_id.as_int(),
     )
 
     queue_name_formatter = providers.Singleton(
