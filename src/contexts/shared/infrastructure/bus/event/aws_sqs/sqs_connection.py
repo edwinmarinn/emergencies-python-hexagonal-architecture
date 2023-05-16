@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 from aiobotocore.session import AioSession
 from typing_extensions import Self
 
+from contexts.shared.infrastructure.bus.event.aws_sqs.sns_topic import SnsTopic
 from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_connection_settings import (
     SqsConnectionSettings,
 )
@@ -20,7 +21,7 @@ class SqsConnection:
         self._sns_client: Any = None
         self._sqs_client: Any = None
 
-        self._topics: Dict[str, Any] = {}
+        self._topics: Dict[str, SnsTopic] = {}
         self._queues: Dict[str, SqsQueue] = {}
 
     async def __aenter__(self) -> Self:
@@ -59,14 +60,20 @@ class SqsConnection:
     async def topic(self, name: str):
         if name not in self._topics:
             sns_client = await self.sns_client
-            topic = await sns_client.create_topic(Name=name)
-            self._topics[name] = topic
+            topic_response = await sns_client.create_topic(Name=name)
+            self._topics[name] = await SnsTopic.create(
+                topic_response=topic_response, sns_client=sns_client
+            )
         return self._topics[name]
 
-    async def queue(self, name: str) -> SqsQueue:
+    async def queue(self, name: str, attributes: Any = None) -> SqsQueue:
         if name not in self._queues:
             sqs_client = await self.sqs_client
-            queue_response = await sqs_client.create_queue(QueueName=name)
+            attributes = attributes or {}
+
+            queue_response = await sqs_client.create_queue(
+                QueueName=name, Attributes=attributes
+            )
             self._queues[name] = await SqsQueue.create(
                 queue_response=queue_response, sqs_client=sqs_client
             )
@@ -74,26 +81,32 @@ class SqsConnection:
 
     async def publish(self, topic_name: str, message: str, routing_key: str):
         sns_client = await self.sns_client
+        topic = await self.topic(name=topic_name)
+
         await sns_client.publish(
-            TopicArn=self.get_sns_arn(topic_name),
+            TopicArn=topic.arn,
             Message=message,
             MessageAttributes={
                 "event_type": {"DataType": "String", "StringValue": routing_key}
             },
         )
 
-    async def queue_bind(self, queue_name, topic_name, routing_keys: List[str]):
+    async def queue_bind(
+        self, queue: SqsQueue, topic_name: str, routing_keys: List[str]
+    ):
+        topic = await self.topic(name=topic_name)
+
         await self._allow_topic_publish_to_queue(
-            topic_name=topic_name,
-            queue_name=queue_name,
+            topic=topic,
+            queue=queue,
         )
 
         sns_client = await self.sns_client
 
         supscription = await sns_client.subscribe(
-            TopicArn=self.get_sns_arn(topic_name),
+            TopicArn=topic.arn,
             Protocol="sqs",
-            Endpoint=self.get_sqs_arn(queue_name),
+            Endpoint=queue.arn,
         )
 
         await sns_client.set_subscription_attributes(
@@ -102,11 +115,7 @@ class SqsConnection:
             AttributeValue=json.dumps({"event_type": routing_keys}),
         )
 
-    async def _allow_topic_publish_to_queue(self, topic_name: str, queue_name: str):
-        sns_arn = self.get_sns_arn(topic_name)
-        sqs_arn = self.get_sqs_arn(queue_name)
-        sqs_url = self.get_sqs_url(queue_name)
-
+    async def _allow_topic_publish_to_queue(self, topic: SnsTopic, queue: SqsQueue):
         sqs_client = await self.sqs_client
 
         access_policy = json.dumps(
@@ -116,28 +125,13 @@ class SqsConnection:
                         "Effect": "Allow",
                         "Principal": {"Service": "sns.amazonaws.com"},
                         "Action": "sqs:SendMessage",
-                        "Resource": sqs_arn,
-                        "Condition": {"ArnEquals": {"aws:SourceArn": sns_arn}},
+                        "Resource": queue.arn,
+                        "Condition": {"ArnEquals": {"aws:SourceArn": topic.arn}},
                     }
                 ]
             }
         )
 
         response = await sqs_client.set_queue_attributes(
-            QueueUrl=sqs_url, Attributes={"Policy": access_policy}
+            QueueUrl=queue.url, Attributes={"Policy": access_policy}
         )
-
-    def get_sqs_arn(self, queue_name: str) -> str:
-        region = self._connection_settings["region"]
-        account_id = self._connection_settings["account_id"]
-        return f"arn:aws:sqs:{region}:{account_id}:{queue_name}"
-
-    def get_sqs_url(self, queue_name: str) -> str:
-        region = self._connection_settings["region"]
-        account_id = self._connection_settings["account_id"]
-        return f"https://sqs.{region}.amazonaws.com/{account_id}/{queue_name}"
-
-    def get_sns_arn(self, topic_name: str) -> str:
-        region = self._connection_settings["region"]
-        account_id = self._connection_settings["account_id"]
-        return f"arn:aws:sns:{region}:{account_id}:{topic_name}"

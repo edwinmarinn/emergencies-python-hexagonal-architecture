@@ -20,7 +20,7 @@ def main():
     from apps.incidents.backend_fastapi.app import create_app
 
     import_string = f"{create_app.__module__}:{create_app.__name__}"
-    uvicorn.run(app=import_string, host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app=import_string, host="0.0.0.0", port=8000, reload=True, factory=True)
 
 
 if __name__ == "__main__":

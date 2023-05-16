@@ -64,10 +64,6 @@ class LocalContainer(containers.DeclarativeContainer):
 
     config = providers.Configuration(yaml_files=[CONFIG_FILE], strict=True)
 
-    company_name = providers.Object("company")
-
-    exchange_name = providers.Object("company_incidents")
-
     rabbit_mq_connection_settings = providers.Singleton(
         RabbitMqConnectionSettings,
         host=config.rabbit_mq.host,
@@ -78,7 +74,7 @@ class LocalContainer(containers.DeclarativeContainer):
     )
 
     queue_name_formatter = providers.Singleton(
-        RabbitMqQueueNameFormatter, company=company_name
+        RabbitMqQueueNameFormatter, company=config.app.company_name
     )
 
     rabbit_mq_connection_async = providers.Singleton(
@@ -89,7 +85,7 @@ class LocalContainer(containers.DeclarativeContainer):
         RabbitMqConfigurerAsync,
         connection=rabbit_mq_connection_async,
         queue_name_formatter=queue_name_formatter,
-        message_retry_ttl=1000,
+        message_retry_ttl=config.app.consume_event_retry_interval.as_int(),
     )
 
     mongo_client = providers.Singleton(
@@ -102,10 +98,6 @@ class LocalContainer(containers.DeclarativeContainer):
         MongodbEmergenciesCounterRepository, client=mongo_client
     )
 
-    # emergency_repository = providers.Singleton(InMemoryEmergencyRepository)
-    # emergencies_counter_repository = providers.Singleton(
-    #     InMemoryEmergenciesCounterRepository
-    # )
     emergencies_counter_per_user_repository = providers.Singleton(
         InMemoryEmergenciesCounterPerUserRepository
     )
@@ -144,7 +136,7 @@ class LocalContainer(containers.DeclarativeContainer):
     event_bus = providers.Singleton(
         RabbitMqEventBusAsync,
         connection=rabbit_mq_connection_async,
-        exchange_name=exchange_name,
+        exchange_name=config.app.exchange_name,
         queue_name_formatter=queue_name_formatter,
         max_retries=10,
     )

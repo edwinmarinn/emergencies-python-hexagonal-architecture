@@ -67,10 +67,6 @@ class AwsContainer(containers.DeclarativeContainer):
 
     config = providers.Configuration(yaml_files=[CONFIG_FILE], strict=True)
 
-    company_name = providers.Object("company")
-
-    sns_topic_name = providers.Object("company_incidents")
-
     sqs_connection_settings = providers.Singleton(
         SqsConnectionSettings,
         aws_access_key_id=config.aws.access_key_id,
@@ -80,7 +76,7 @@ class AwsContainer(containers.DeclarativeContainer):
     )
 
     queue_name_formatter = providers.Singleton(
-        SqsQueueNameFormatter, company=company_name
+        SqsQueueNameFormatter, company=config.app.company_name
     )
 
     sqs_connection = providers.Resource(
@@ -92,7 +88,7 @@ class AwsContainer(containers.DeclarativeContainer):
         SqsConfigurer,
         connection=sqs_connection,
         queue_name_formatter=queue_name_formatter,
-        # message_retry_ttl=1000,
+        max_receive_count=config.app.consume_event_max_retries.as_int(),
     )
 
     mongo_client = providers.Singleton(
@@ -147,9 +143,10 @@ class AwsContainer(containers.DeclarativeContainer):
     event_bus = providers.Singleton(
         SqsEventBus,
         connection=sqs_connection,
-        sns_topic_name=sns_topic_name,
+        sns_topic_name=config.app.event_bus_exchange_name,
         queue_name_formatter=queue_name_formatter,
-        max_retries=10,
+        retry_visibility_timeout=config.app.consume_event_retry_interval.as_int(),
+        consume_interval=config.app.consume_event_interval.as_int(),
     )
 
     command_bus = providers.Singleton(

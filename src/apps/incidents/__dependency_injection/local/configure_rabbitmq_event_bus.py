@@ -14,7 +14,7 @@ def configure_rabbitmq_event_bus(
     async def configure_rabbit_mq():
         rabbit_mq_connection_configurer = container.rabbit_mq_configurer()
         await rabbit_mq_connection_configurer.configure(
-            exchange_name=container.exchange_name(),
+            exchange_name=container.config.app.event_bus_exchange_name(),
             subscribers=container.event_subscribers(),
         )
 

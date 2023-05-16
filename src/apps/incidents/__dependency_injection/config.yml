@@ -17,3 +17,10 @@ aws:
   secret_access_key: ${AWS_SECRET_ACCESS_KEY}
   region: ${AWS_REGION}
   account_id: ${AWS_ACCOUNT_ID}
+
+app:
+  company_name: ${APP_COMPANY_NAME}
+  event_bus_exchange_name: ${APP_EVENT_BUS_EXCHANGE_NAME}
+  consume_event_interval: ${APP_CONSUME_EVENT_INTERVAL}
+  consume_event_max_retries: ${APP_CONSUME_EVENT_MAX_RETRIES}
+  consume_event_retry_interval: ${APP_CONSUME_EVENT_RETRY_INTERVAL}

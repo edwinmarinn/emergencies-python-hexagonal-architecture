@@ -35,11 +35,10 @@ class RabbitMqDomainEventsConsumerAsync:
 
             try:
                 await subscriber(event)
-            except Exception as error:
+            except Exception:
                 await self._handle_consumption_error(message)
-                raise error
-
-            await message.ack()
+            finally:
+                await message.ack()
 
         return wrapper
 
@@ -48,8 +47,6 @@ class RabbitMqDomainEventsConsumerAsync:
             await self._send_to_dead_letter(message)
         else:
             await self._send_to_retry(message)
-
-        await message.ack()
 
     def _has_been_redelivered_too_much(self, message: AbstractIncomingMessage) -> bool:
         return self._get_redelivery_count_header(message) >= self._max_retries

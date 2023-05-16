@@ -10,7 +10,7 @@ def configure_sns_sqs_event_bus(
     async def configure_sqs():
         sqs_configurer = container.sqs_configurer()
         await sqs_configurer.configure(
-            sns_topic_name=container.sns_topic_name(),
+            sns_topic_name=container.config.app.event_bus_exchange_name(),
             subscribers=container.event_subscribers(),
         )
 

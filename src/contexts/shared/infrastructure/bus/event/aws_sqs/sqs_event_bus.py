@@ -28,12 +28,14 @@ class SqsEventBus(EventBus):
         connection: SqsConnection,
         sns_topic_name: str,
         queue_name_formatter: SqsQueueNameFormatter,
-        max_retries: int,
+        retry_visibility_timeout: int,
+        consume_interval: int,
     ):
         self._connection = connection
         self._sns_topic_name = sns_topic_name
         self._queue_name_formatter = queue_name_formatter
-        self._max_retries = max_retries
+        self._retry_visibility_timeout = retry_visibility_timeout
+        self._consume_interval = consume_interval
 
     async def publish(self, *events: DomainEvent) -> None:
         tasks = [asyncio.create_task(self._publisher(event)) for event in events]
@@ -67,6 +69,7 @@ class SqsEventBus(EventBus):
                 deserializer=deserializer,
                 topic_name=self._sns_topic_name,
                 queue_name=queue_name,
-                max_retries=self._max_retries,
+                retry_visibility_timeout=self._retry_visibility_timeout,
+                consume_interval=self._consume_interval,
             )
             await sqs_consumer.consume(subscriber=subscriber)
