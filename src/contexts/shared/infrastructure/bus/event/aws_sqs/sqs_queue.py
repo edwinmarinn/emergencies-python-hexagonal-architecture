@@ -3,7 +3,10 @@ from asyncio import Task
 from typing import Any, Awaitable, Callable, Dict
 
 from typing_extensions import Self
-from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_incoming_message import SqsIncomingMessage
+
+from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_incoming_message import (
+    SqsIncomingMessage,
+)
 
 MessageCallable = Callable[[SqsIncomingMessage], Awaitable[Any]]
 

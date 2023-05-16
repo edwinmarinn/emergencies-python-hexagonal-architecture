@@ -1,7 +1,9 @@
 from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_connection import (
     SqsConnection,
 )
-from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_incoming_message import SqsIncomingMessage
+from contexts.shared.infrastructure.bus.event.aws_sqs.sqs_incoming_message import (
+    SqsIncomingMessage,
+)
 from contexts.shared.infrastructure.bus.event.domain_event_json_deserializer import (
     DomainEventJsonDeserializer,
 )
