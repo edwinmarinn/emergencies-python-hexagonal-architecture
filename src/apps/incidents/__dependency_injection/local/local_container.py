@@ -37,8 +37,8 @@ from contexts.incidents.emergencies_counter_per_user.application.increment impor
     EmergenciesCounterPerUserIncrementer,
     IncrementEmergenciesCounterPerUserOnEmergencyCreated,
 )
-from contexts.incidents.emergencies_counter_per_user.infraestructure.persistence import (
-    InMemoryEmergenciesCounterPerUserRepository,
+from contexts.incidents.emergencies_counter_per_user.infraestructure.persistence.mongodb import (
+    MongodbEmergenciesCounterPerUserRepository,
 )
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event.rabbit_mq import (
@@ -49,6 +49,7 @@ from contexts.shared.infrastructure.bus.event.rabbit_mq import (
     RabbitMqQueueNameFormatter,
 )
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
+from contexts.shared.infrastructure.persistence.mongodb import MongoDbDatabaseConnection
 
 CURRENT_DIR = Path(__file__).resolve().parent
 CONFIG_FILE = CURRENT_DIR.parent / "config.yml"
@@ -89,17 +90,24 @@ class LocalContainer(containers.DeclarativeContainer):
     )
 
     mongo_client = providers.Singleton(
-        AsyncIOMotorClient, "mongodb://root:U9cUkvLF668u9gfT@mongo:27017/"
+        AsyncIOMotorClient,
+        username=config.mongodb.username,
+        password=config.mongodb.password,
+        host=config.mongodb.host,
+        port=config.mongodb.port,
+    )
+    mongodb_incidents_connection = providers.Singleton(
+        MongoDbDatabaseConnection, client=mongo_client, database_name="incidents"
     )
     emergency_repository = providers.Singleton(
-        MongoDbEmergencyRepository, client=mongo_client
+        MongoDbEmergencyRepository, connection=mongodb_incidents_connection
     )
     emergencies_counter_repository = providers.Singleton(
-        MongodbEmergenciesCounterRepository, client=mongo_client
+        MongodbEmergenciesCounterRepository, connection=mongodb_incidents_connection
     )
-
     emergencies_counter_per_user_repository = providers.Singleton(
-        InMemoryEmergenciesCounterPerUserRepository
+        MongodbEmergenciesCounterPerUserRepository,
+        connection=mongodb_incidents_connection,
     )
 
     query_bus = providers.Singleton(
@@ -136,7 +144,7 @@ class LocalContainer(containers.DeclarativeContainer):
     event_bus = providers.Singleton(
         RabbitMqEventBusAsync,
         connection=rabbit_mq_connection_async,
-        exchange_name=config.app.exchange_name,
+        exchange_name=config.app.event_bus_exchange_name,
         queue_name_formatter=queue_name_formatter,
         max_retries=10,
     )

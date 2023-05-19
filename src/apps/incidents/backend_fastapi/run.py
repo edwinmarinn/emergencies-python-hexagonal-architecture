@@ -4,14 +4,14 @@ from environs import Env
 
 def load_environment_variables():
     env = Env()
-    env.read_env(
-        path="/home/ssd/programming/emergencias-python-arquitectura-hexagonal/.env.default",
-        override=True,
-    )
-    env.read_env(
-        path="/home/ssd/programming/emergencias-python-arquitectura-hexagonal/.env.local",
-        override=True,
-    )
+    # env.read_env(
+    #     path="/home/ssd/programming/emergencias-python-arquitectura-hexagonal/.env.default",
+    #     override=True,
+    # )
+    # env.read_env(
+    #     path="/home/ssd/programming/emergencias-python-arquitectura-hexagonal/.env.local",
+    #     override=True,
+    # )
 
 
 def main():

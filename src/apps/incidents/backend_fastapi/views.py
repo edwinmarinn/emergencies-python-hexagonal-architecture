@@ -24,7 +24,7 @@ class EmergencyBody(BaseModel):
     user_id: str
 
 
-@router.put("/emergencies/")
+@router.put("/emergencies")
 @inject
 async def create_emergency(
     emergency: EmergencyBody,
@@ -37,7 +37,7 @@ async def create_emergency(
     return {}
 
 
-@router.get("/emergencies/")
+@router.get("/emergencies")
 @inject
 async def list_emergency(query_bus: QueryBus = Depends(Provide[Container.query_bus])):
     query = ListEmergenciesQuery(

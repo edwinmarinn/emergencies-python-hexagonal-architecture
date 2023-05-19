@@ -40,8 +40,8 @@ from contexts.incidents.emergencies_counter_per_user.application.increment impor
     EmergenciesCounterPerUserIncrementer,
     IncrementEmergenciesCounterPerUserOnEmergencyCreated,
 )
-from contexts.incidents.emergencies_counter_per_user.infraestructure.persistence import (
-    InMemoryEmergenciesCounterPerUserRepository,
+from contexts.incidents.emergencies_counter_per_user.infraestructure.persistence.mongodb import (
+    MongodbEmergenciesCounterPerUserRepository,
 )
 from contexts.shared.infrastructure.bus.command import InMemoryCommandBus
 from contexts.shared.infrastructure.bus.event.aws_sqs import (
@@ -52,6 +52,7 @@ from contexts.shared.infrastructure.bus.event.aws_sqs import (
     SqsQueueNameFormatter,
 )
 from contexts.shared.infrastructure.bus.query import InMemoryQueryBus
+from contexts.shared.infrastructure.persistence.mongodb import MongoDbDatabaseConnection
 
 CURRENT_DIR = Path(__file__).resolve().parent
 CONFIG_FILE = CURRENT_DIR.parent / "config.yml"
@@ -97,15 +98,18 @@ class AwsContainer(containers.DeclarativeContainer):
         host=config.mongodb.host,
         port=config.mongodb.port,
     )
+    mongodb_incidents_connection = providers.Singleton(
+        MongoDbDatabaseConnection, client=mongo_client, database_name="incidents"
+    )
     emergency_repository = providers.Singleton(
-        MongoDbEmergencyRepository, client=mongo_client
+        MongoDbEmergencyRepository, connection=mongodb_incidents_connection
     )
     emergencies_counter_repository = providers.Singleton(
-        MongodbEmergenciesCounterRepository, client=mongo_client
+        MongodbEmergenciesCounterRepository, connection=mongodb_incidents_connection
     )
-
     emergencies_counter_per_user_repository = providers.Singleton(
-        InMemoryEmergenciesCounterPerUserRepository
+        MongodbEmergenciesCounterPerUserRepository,
+        connection=mongodb_incidents_connection,
     )
 
     query_bus = providers.Singleton(

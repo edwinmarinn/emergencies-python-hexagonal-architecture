@@ -1,9 +1,3 @@
-from motor.motor_asyncio import (
-    AsyncIOMotorClient,
-    AsyncIOMotorCollection,
-    AsyncIOMotorDatabase,
-)
-
 from contexts.incidents.emergencies.domain.entities import (
     Emergencies,
     Emergency,
@@ -12,13 +6,13 @@ from contexts.incidents.emergencies.domain.entities import (
 from contexts.incidents.emergencies.domain.value_objects import EmergencyCode
 from contexts.incidents.shared.domain.emergencies.value_objects import EmergencyId
 from contexts.shared.domain.criteria import Criteria
+from contexts.shared.infrastructure.persistence.mongodb import MongoDbDatabaseConnection
 
 
 class MongoDbEmergencyRepository(EmergencyRepository):
-    def __init__(self, client: AsyncIOMotorClient):
-        self._client = client
-        self._db: AsyncIOMotorDatabase = self._client["incidents"]
-        self._collection: AsyncIOMotorCollection = self._db["emergencies"]
+    def __init__(self, connection: MongoDbDatabaseConnection):
+        self._database = connection.database
+        self._collection = self._database["emergencies"]
 
     async def save(self, emergency: Emergency) -> None:
         data = emergency.to_primitives()

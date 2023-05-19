@@ -1,9 +1,9 @@
 
 mongodb:
-  username: ${MONGO_USERNAME}
-  password: ${MONGO_PASSWORD}
   host: ${MONGO_HOST}
   port: ${MONGO_PORT}
+  username: ${MONGO_USERNAME}
+  password: ${MONGO_PASSWORD}
 
 rabbit_mq:
   host: ${RABBIT_MQ_HOST}
