@@ -1,10 +1,10 @@
-from typing import Dict
+from typing import Mapping
 
 from typing_extensions import Self
 
 
 class SnsTopic:
-    def __init__(self, topic_response: Dict[str, str], sns_client):
+    def __init__(self, topic_response: Mapping[str, str], sns_client):
         self._topic_response = topic_response
         self._sns_client = sns_client
 

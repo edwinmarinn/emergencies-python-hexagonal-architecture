@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, TypedDict
+from typing import Any, TypedDict
 
 from .aws import AwsContainer, configure_sns_sqs_event_bus
 from .local import LocalContainer, configure_rabbitmq_event_bus
@@ -10,7 +10,7 @@ class Option(TypedDict):
     configure_event_bus: Any
 
 
-_containers: Dict[str, Option] = {
+_containers: dict[str, Option] = {
     "aws": {
         "container_class": AwsContainer,
         "configure_event_bus": configure_sns_sqs_event_bus,

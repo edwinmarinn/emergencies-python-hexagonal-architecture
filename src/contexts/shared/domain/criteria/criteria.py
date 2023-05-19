@@ -1,5 +1,3 @@
-from typing import List
-
 from .filter import Filter
 from .filters import Filters
 from .order import Order
@@ -27,7 +25,7 @@ class Criteria:
         return not self._order.is_none
 
     @property
-    def plain_filters(self) -> List[Filter]:
+    def plain_filters(self) -> list[Filter]:
         return self._filters.filters
 
     @property

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Dict
+from typing import Mapping
 
 from contexts.shared.domain.value_objects import Uuid
 
@@ -8,7 +8,10 @@ from .api_http_response import ApiHttpResponse
 
 class ApiHttpAcceptedResponse(ApiHttpResponse):
     def __init__(
-        self, current_url: str, request_id: Uuid, headers: Dict[str, str] | None = None
+        self,
+        current_url: str,
+        request_id: Uuid,
+        headers: Mapping[str, str] | None = None,
     ):
         headers = headers or {}
         super().__init__(

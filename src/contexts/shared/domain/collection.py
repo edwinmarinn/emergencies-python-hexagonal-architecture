@@ -1,11 +1,11 @@
 from collections.abc import Iterable, Iterator
-from typing import Generic, List, Type, TypeVar
+from typing import Generic, Type, TypeVar
 
 T = TypeVar("T")
 
 
 class Collection(Iterable, Generic[T]):
-    def __init__(self, items: List[T]):
+    def __init__(self, items: list[T]):
         self._items = items
         self._assert_items_are_of_type()
 
@@ -24,7 +24,7 @@ class Collection(Iterable, Generic[T]):
         raise NotImplementedError("type() method must be implemented in subclasses")
 
     @property
-    def items(self) -> List[T]:
+    def items(self) -> list[T]:
         return self._items
 
     @property

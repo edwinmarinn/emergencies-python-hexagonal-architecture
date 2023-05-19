@@ -1,4 +1,4 @@
-from typing import Dict, cast
+from typing import cast
 
 import aio_pika
 import pamqp.common
@@ -14,8 +14,8 @@ class RabbitMqConnectionAsync:
 
         self._connection: RobustConnection | None = None
         self._channel: RobustChannel | None = None
-        self._exchanges: Dict[str, AbstractRobustExchange] = {}
-        self._queues: Dict[str, AbstractRobustQueue] = {}
+        self._exchanges: dict[str, AbstractRobustExchange] = {}
+        self._queues: dict[str, AbstractRobustQueue] = {}
 
     async def exchange(
         self, name: str, type: ExchangeType = ExchangeType.TOPIC, durable: bool = True

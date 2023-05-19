@@ -1,6 +1,6 @@
 import asyncio
 from asyncio import Task
-from typing import Any, Awaitable, Callable, Dict
+from typing import Any, Awaitable, Callable, Mapping
 
 from typing_extensions import Self
 
@@ -12,14 +12,14 @@ MessageCallable = Callable[[SqsIncomingMessage], Awaitable[Any]]
 
 
 class SqsQueue:
-    def __init__(self, queue_response: Dict[str, str], sqs_client):
+    def __init__(self, queue_response: Mapping[str, str], sqs_client):
         self._queue_response = queue_response
-        self._attributes: Dict[str, str] = {}
+        self._attributes: dict[str, str] = {}
 
         self._sqs_client = sqs_client
 
         # Important to maintain task references and prevent them from being collected by the garbage collector
-        self._consume_tasks: Dict[MessageCallable, Task] = {}
+        self._consume_tasks: dict[MessageCallable, Task] = {}
 
     async def _init(self):
         response = await self._sqs_client.get_queue_attributes(

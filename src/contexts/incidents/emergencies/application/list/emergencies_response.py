@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 from contexts.shared.domain.bus.query import Response
 
@@ -13,5 +12,5 @@ class EmergencyResponse:
 
 
 class EmergenciesResponse(Response):
-    def __init__(self, emergencies: List[EmergencyResponse]):
+    def __init__(self, emergencies: list[EmergencyResponse]):
         self.emergencies = emergencies

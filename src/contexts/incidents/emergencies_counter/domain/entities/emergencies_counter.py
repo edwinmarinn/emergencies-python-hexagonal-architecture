@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Mapping
+from typing import Any, Mapping
 
 from typing_extensions import Self
 
@@ -31,7 +31,7 @@ class EmergenciesCounter(AggregateRoot):
             )
         )
 
-    def to_primitives(self) -> Dict[str, Any]:
+    def to_primitives(self) -> dict[str, Any]:
         return {
             "id": self.id.value,
             "total": self.total.value,

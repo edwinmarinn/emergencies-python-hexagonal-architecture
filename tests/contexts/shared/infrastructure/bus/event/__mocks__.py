@@ -1,4 +1,4 @@
-from typing import Any, List, Type
+from typing import Any, Type
 
 from typing_extensions import Self
 
@@ -37,7 +37,7 @@ class FakeDomainEventTwo(DomainEvent):
 
 class FakeDomainEventSubscriber(DomainEventSubscriber):
     @staticmethod
-    def subscribed_to() -> List[Type[DomainEvent]]:
+    def subscribed_to() -> list[Type[DomainEvent]]:
         return [FakeDomainEventOne, FakeDomainEventTwo]
 
     async def __call__(self, event: FakeDomainEventOne | FakeDomainEventTwo):

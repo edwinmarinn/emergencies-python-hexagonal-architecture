@@ -1,4 +1,4 @@
-from typing import Any, Dict, Mapping
+from typing import Any, Mapping
 
 from typing_extensions import Self
 
@@ -48,7 +48,7 @@ class Emergency(AggregateRoot):
 
         return emergency
 
-    def to_primitives(self) -> Dict[str, Any]:
+    def to_primitives(self) -> dict[str, Any]:
         return {
             "id": self.id.value,
             "code": self.code.value,

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List, Type
+from typing import Type
 
 from contexts.shared.domain.bus.event import (
     DomainEvent,
@@ -7,11 +7,11 @@ from contexts.shared.domain.bus.event import (
     EventBus,
 )
 
-MapSubscribers = Dict[Type[DomainEvent], List[DomainEventSubscriber]]
+MapSubscribers = dict[Type[DomainEvent], list[DomainEventSubscriber]]
 
 
 def map_event_to_subscribers(
-    event_subscribers: List[DomainEventSubscriber],
+    event_subscribers: list[DomainEventSubscriber],
 ) -> MapSubscribers:
     map_subscribers: MapSubscribers = defaultdict(list)
 
@@ -23,7 +23,7 @@ def map_event_to_subscribers(
 
 
 class InMemoryEventBus(EventBus):
-    def __init__(self, event_subscribers: List[DomainEventSubscriber]):
+    def __init__(self, event_subscribers: list[DomainEventSubscriber]):
         self.map_subscribers = map_event_to_subscribers(event_subscribers)
 
     async def publish(self, *events: DomainEvent) -> None:

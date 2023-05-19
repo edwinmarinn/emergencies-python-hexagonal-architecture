@@ -1,13 +1,11 @@
-from typing import List
-
 from contexts.shared.domain.bus.event.domain_event import DomainEvent
 
 
 class AggregateRoot:
     def __init__(self) -> None:
-        self.domain_events: List[DomainEvent] = []
+        self.domain_events: list[DomainEvent] = []
 
-    def pull_domain_events(self) -> List[DomainEvent]:
+    def pull_domain_events(self) -> list[DomainEvent]:
         domain_events = self.domain_events
         self.domain_events = []
 

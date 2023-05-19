@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Dict
 
 from contexts.shared.domain.bus.command import Command, CommandBus
 from contexts.shared.domain.bus.query import Query, QueryBus, Response
@@ -21,7 +20,7 @@ class ApiController(ABC):
         self._register_exceptions()
 
     @abstractmethod
-    def exceptions(self) -> Dict[str, int]:
+    def exceptions(self) -> dict[str, int]:
         pass
 
     async def dispatch(self, command: Command) -> None:

@@ -1,10 +1,9 @@
 from http import HTTPStatus
-from typing import Dict
 
 
 class ApiExceptionsHttpStatusCodeMapping:
     def __init__(self):
-        self._exceptions: Dict[str, int] = {
+        self._exceptions: dict[str, int] = {
             ValueError.__name__: HTTPStatus.BAD_REQUEST,
         }
 

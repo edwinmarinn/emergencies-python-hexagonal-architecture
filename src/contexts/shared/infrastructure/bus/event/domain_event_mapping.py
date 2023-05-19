@@ -1,9 +1,9 @@
 from functools import reduce
-from typing import Dict, Iterable, Type
+from typing import Iterable, Type
 
 from contexts.shared.domain.bus.event import DomainEvent, DomainEventSubscriber
 
-MapEventName = Dict[str, Type[DomainEvent]]
+MapEventName = dict[str, Type[DomainEvent]]
 
 
 class DomainEventMapping:

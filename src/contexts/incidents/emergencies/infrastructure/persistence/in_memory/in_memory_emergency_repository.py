@@ -1,5 +1,3 @@
-from typing import Dict
-
 from contexts.incidents.emergencies.domain.entities import (
     Emergencies,
     Emergency,
@@ -12,7 +10,7 @@ from contexts.shared.domain.criteria import Criteria
 
 class InMemoryEmergencyRepository(EmergencyRepository):
     def __init__(self):
-        self._data: Dict[EmergencyId, Emergency] = {}
+        self._data: dict[EmergencyId, Emergency] = {}
 
     async def save(self, emergency: Emergency) -> None:
         self._data[emergency.id] = emergency

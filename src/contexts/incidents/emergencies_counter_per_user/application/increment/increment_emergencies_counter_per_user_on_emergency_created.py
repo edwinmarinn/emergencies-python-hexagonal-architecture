@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import Type
 
 from contexts.incidents.emergencies.domain.entities import EmergencyCreatedDomainEvent
 from contexts.incidents.emergencies_counter_per_user.application.increment.emergencies_counter_per_user_incrementer import (
@@ -14,7 +14,7 @@ class IncrementEmergenciesCounterPerUserOnEmergencyCreated(DomainEventSubscriber
         self._incrementer = incrementer
 
     @staticmethod
-    def subscribed_to() -> List[Type[DomainEvent]]:
+    def subscribed_to() -> list[Type[DomainEvent]]:
         return [EmergencyCreatedDomainEvent]
 
     async def __call__(self, event: EmergencyCreatedDomainEvent):

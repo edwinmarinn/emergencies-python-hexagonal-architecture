@@ -1,6 +1,6 @@
 from abc import ABC
 from http import HTTPStatus
-from typing import Any, Dict
+from typing import Any
 
 
 class ApiHttpResponse(ABC):
@@ -8,7 +8,7 @@ class ApiHttpResponse(ABC):
         self,
         data: Any,
         status_code: int = HTTPStatus.OK,
-        headers: Dict[str, str] | None = None,
+        headers: dict[str, str] | None = None,
     ):
         self._data = data or {}
         self._status_code = status_code
@@ -23,5 +23,5 @@ class ApiHttpResponse(ABC):
         return self._status_code
 
     @property
-    def headers(self) -> Dict[str, str]:
+    def headers(self) -> dict[str, str]:
         return self._headers

@@ -1,6 +1,6 @@
 import json
 from contextlib import AsyncExitStack
-from typing import Any, Dict, List
+from typing import Any
 
 from aiobotocore.session import AioSession
 from typing_extensions import Self
@@ -21,8 +21,8 @@ class SqsConnection:
         self._sns_client: Any = None
         self._sqs_client: Any = None
 
-        self._topics: Dict[str, SnsTopic] = {}
-        self._queues: Dict[str, SqsQueue] = {}
+        self._topics: dict[str, SnsTopic] = {}
+        self._queues: dict[str, SqsQueue] = {}
 
     async def __aenter__(self) -> Self:
         return self
@@ -92,7 +92,7 @@ class SqsConnection:
         )
 
     async def queue_bind(
-        self, queue: SqsQueue, topic_name: str, routing_keys: List[str]
+        self, queue: SqsQueue, topic_name: str, routing_keys: list[str]
     ):
         topic = await self.topic(name=topic_name)
 
